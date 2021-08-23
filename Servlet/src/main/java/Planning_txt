@@ -1,0 +1,47 @@
+ORM - Object Relational Mapping
+Given a Schema it will create methods to modify those schema.
+
+Planning for project.
+
+* Data Modeling - association between entities similar to association between classes
+
+
+Hibernate Modules/Artifacts
+
+Hiberate-core - Defines ORM features and APIs as well as the various integration SPIs
+
+Hibernate-envers - *historical entity versioning features
+
+Hibernate-spatial - Spatial/GIS data type support
+
+Hibernate osgi - running OSGi container
+
+Hibernate-connection -- some connection to come pooling library
+https://docs.jboss.org/hibernate/orm/5.4/quickstart/html_single/
+
+Hibernate Cache
+
+// Create ORM
+    // ORM Interface -- Given a class
+        // CRUD Methods
+        Create Table
+
+        Select * From Table
+        Select Column from table where condition <-- this will take a minute
+
+        Update
+
+        Delete
+
+
+
+
+
+
+/// understanding these is very good for project
+Example Code --
+https://www.marcobehler.com/guides/java-databases
+
+
+Example of naming class
+https://www.marcobehler.com/guides/java-databases

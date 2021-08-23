@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Metamodel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">orm</a> &gt; <a href="index.source.html" class="el_package">com.revature.orm.util</a> &gt; <span class="el_source">Metamodel.java</span></div><h1>Metamodel.java</h1><pre class="source lang-java linenums">package com.revature.orm.util;
+
+import com.revature.orm.annotations.Column;
+import com.revature.orm.annotations.Entity;
+import com.revature.orm.annotations.Id;
+import com.revature.orm.annotations.JoinColumn;
+import com.revature.orm.persistence.DAOimpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Stream;
+
+/**
+ * Makes sure annotations on classes are correct
+ * so classes be made into tables
+ * @param &lt;T&gt; ***Not sure about this right now*** change later***
+ */
+public class Metamodel&lt;T&gt; {
+    private Class&lt;T&gt; clazz;
+    private IdField primaryKeyField;
+    private List&lt;ColumnField&gt; columnFields;
+    private List&lt;ForeignKeyField&gt; foreignKeyFields;
+
+
+
+<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(Metamodel.class);</span>
+
+    /**
+     * checks if class has Entity annotation
+     * @param clazz
+     * @param &lt;T&gt;
+     * @return
+     */
+    public static &lt;T&gt; Metamodel&lt;T&gt; of(Class&lt;T&gt; clazz) {
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if (clazz.getAnnotation(Entity.class) == null) {</span>
+<span class="nc" id="L39">            throw new IllegalStateException(&quot;Cannot create Metamodel object! Provided class, &quot; + clazz.getName() + &quot; is not annotated with @Entity&quot;);</span>
+        }
+<span class="nc" id="L41">        return new Metamodel&lt;&gt;(clazz);</span>
+    }
+
+    /**
+     * Constructor
+     * initializes column fields and foreign key fields for class
+     * @param clazz
+     */
+<span class="nc" id="L49">    public Metamodel(Class&lt;T&gt; clazz){</span>
+<span class="nc" id="L50">        this.clazz = clazz;</span>
+<span class="nc" id="L51">        this.columnFields = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L52">        this.foreignKeyFields = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L53">    }</span>
+
+    public String getClassName() {
+<span class="nc" id="L56">        return clazz.getName().toLowerCase(Locale.ROOT);</span>
+    }
+
+    public String getSimpleClassName() {
+<span class="nc" id="L60">        return clazz.getSimpleName().toLowerCase(Locale.ROOT);</span>
+    }
+
+    /**
+     * Look through all the fields and identifies primary key
+     * @return field with id annotation
+     */
+    public IdField getPrimaryKey(){
+
+<span class="nc" id="L69">        Field[] fields = clazz.getDeclaredFields();</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        for(Field field : fields){</span>
+<span class="nc" id="L71">            Id primaryKey = field.getAnnotation(Id.class);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">            if(primaryKey != null){</span>
+<span class="nc" id="L73">                return new IdField(field);</span>
+            }
+        }
+<span class="nc" id="L76">        logger.warn(&quot;Did not find a field annotated with @Id in: &quot; + clazz.getName());</span>
+<span class="nc" id="L77">        throw new RuntimeException();</span>
+    }
+
+    /**
+     * Looks through all fields and returns a list of those with column annotation
+     * @return List of fields with column annotation
+     */
+    public List&lt;ColumnField&gt; getColumns() {
+
+<span class="nc" id="L86">        Field[] fields = clazz.getDeclaredFields();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        for (Field field : fields) {</span>
+<span class="nc" id="L88">            Column column = field.getAnnotation(Column.class);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">            if (column != null) {</span>
+<span class="nc" id="L90">                columnFields.add(new ColumnField(field));</span>
+            }
+        }
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (columnFields.isEmpty()) {</span>
+<span class="nc" id="L95">            logger.warn(&quot;No columns found in: &quot; + clazz.getName());</span>
+<span class="nc" id="L96">            throw new RuntimeException();</span>
+        }
+
+<span class="nc" id="L99">        return columnFields;</span>
+    }
+
+    /**
+     * Looks through fields and returns a list of those with JoinColumn annotation
+     * @return List of fields with JoinColumn annotation
+     */
+    public List&lt;ForeignKeyField&gt; getForeignKeys() {
+
+<span class="nc" id="L108">        List&lt;ForeignKeyField&gt; foreignKeyFields = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L109">        Field[] fields = clazz.getDeclaredFields();</span>
+
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        for (Field field : fields) {</span>
+
+<span class="nc" id="L113">            JoinColumn column = field.getAnnotation(JoinColumn.class);</span>
+
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            if (column != null) {</span>
+<span class="nc" id="L116">                foreignKeyFields.add(new ForeignKeyField(field));</span>
+            }
+        }
+
+<span class="nc" id="L120">        return foreignKeyFields;</span>
+    }
+
+    /**
+     * returns all methods from current class
+     * @return List of Methods
+     */
+    public List&lt;Method&gt; getDeclaredMethods(){
+<span class="nc" id="L128">        List&lt;Method&gt; ans = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L129">        Method[] methods = this.clazz.getDeclaredMethods();</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        for(Method m: methods){</span>
+<span class="nc" id="L131">            ans.add(m);</span>
+        }
+<span class="nc" id="L133">        return ans;</span>
+    }
+
+    /**
+     * Returns a list of set methods
+     * @return an unsorted list of set methods
+     */
+    public List&lt;Method&gt; getSetMethodsUnsorted(){
+<span class="nc" id="L141">        Method[] methods = this.clazz.getDeclaredMethods();</span>
+<span class="nc" id="L142">        Stream&lt;Method&gt; setMethods = Arrays.stream(methods)</span>
+<span class="nc" id="L143">                .filter(m -&gt; m.getName().contains(&quot;set&quot;));</span>
+
+<span class="nc" id="L145">        List&lt;Method&gt; unsorted = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L146">        setMethods.forEach(s -&gt; unsorted.add(s));</span>
+<span class="nc" id="L147">        return unsorted;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

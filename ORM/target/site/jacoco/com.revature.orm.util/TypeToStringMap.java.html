@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TypeToStringMap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">orm</a> &gt; <a href="index.source.html" class="el_package">com.revature.orm.util</a> &gt; <span class="el_source">TypeToStringMap.java</span></div><h1>TypeToStringMap.java</h1><pre class="source lang-java linenums">package com.revature.orm.util;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * This class is for mapping types to SQL types for mapping
+ * SQL type to Java types.
+ */
+<span class="nc" id="L13">public class TypeToStringMap {</span>
+
+    /**
+     * Holds the types I will map
+     * I used it to get the type value I wanted to map
+     */
+<span class="nc" id="L19">    private class classData{</span>
+        int i;
+        double d;
+        String s;
+        Date date;
+        boolean bool;
+    }
+
+    /**
+     * Maps Type to Type value to String values that is used to cretae SQL tables
+     * @return Hashmap that gets String value when input Type
+     */
+    public HashMap&lt;Type, String&gt; dataTypeToStringConversion(){
+<span class="nc" id="L32">        classData cd = new classData();</span>
+<span class="nc" id="L33">        Field[] field = cd.getClass().getDeclaredFields();</span>
+
+<span class="nc" id="L35">        HashMap&lt;Type,String&gt; ans = new HashMap&lt;&gt;();</span>
+
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        for(Field f: field){</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">            if(f.getType() == Integer.TYPE){</span>
+<span class="nc" id="L39">                ans.put(f.getType(), &quot;int&quot;);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            }else if(f.getType() == Double.TYPE){</span>
+<span class="nc" id="L41">                ans.put(f.getType(), &quot;double precision&quot;);</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">            }else if(f.getType().equals(String.class)){</span>
+<span class="nc" id="L43">                ans.put(f.getType(), &quot;varchar (50)&quot;);</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            }else if(f.getType().equals(Date.class)){</span>
+<span class="nc" id="L45">                ans.put(f.getType(), &quot;date&quot;);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">            }else if(f.getType().equals(Boolean.TYPE)){</span>
+<span class="nc" id="L47">                ans.put(f.getType(), &quot;boolean&quot;);</span>
+            }
+        }
+<span class="nc" id="L50">        return ans;</span>
+    }
+
+    /**
+     * Reverses the dataTypeToStringConversion() HashMap
+     * So inputing a String will return the corresponding type
+     * @return
+     */
+    public HashMap&lt;String, Type&gt; reversedMapStringToDataType(){
+<span class="nc" id="L59">        HashMap&lt;Type, String&gt; normal = dataTypeToStringConversion();</span>
+<span class="nc" id="L60">        HashMap&lt;String, Type&gt; reversed = new HashMap&lt;&gt;();</span>
+
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        for(Map.Entry&lt;Type, String&gt; entry: normal.entrySet() ){</span>
+<span class="nc" id="L63">            reversed.put(entry.getValue(), entry.getKey());</span>
+<span class="nc" id="L64">        }</span>
+<span class="nc" id="L65">        return reversed;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

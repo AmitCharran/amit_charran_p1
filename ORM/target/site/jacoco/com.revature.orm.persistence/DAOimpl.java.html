@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DAOimpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">orm</a> &gt; <a href="index.source.html" class="el_package">com.revature.orm.persistence</a> &gt; <span class="el_source">DAOimpl.java</span></div><h1>DAOimpl.java</h1><pre class="source lang-java linenums">package com.revature.orm.persistence;
+
+import com.revature.orm.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.sql.*;
+import java.util.*;
+import java.util.stream.Stream;
+
+/**
+ * Used to connect to our database
+ */
+public class DAOimpl implements DAO{
+
+<span class="nc" id="L20">    final static Logger logger = LoggerFactory.getLogger(DAOimpl.class);</span>
+
+
+    private String url;
+    private String user;
+    private String pass;
+
+    /**
+     * constructor with values used for database initialization
+     * @param url
+     * @param user
+     * @param pass
+     */
+<span class="nc" id="L33">    public DAOimpl(String url, String user, String pass){</span>
+<span class="nc" id="L34">        this.url = url;</span>
+<span class="nc" id="L35">        this.user = user;</span>
+<span class="nc" id="L36">        this.pass = pass;</span>
+<span class="nc" id="L37">    }</span>
+
+    /**
+     * Create table depending on current class
+     * @param clazz if annotations are correct, a table is created
+     */
+    @Override
+    public void createTable(Class&lt;?&gt; clazz) {
+<span class="nc" id="L45">        Metamodel mm = new Metamodel(clazz);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if(tableExists(mm.getSimpleClassName())){</span>
+<span class="nc" id="L47">            throw new IllegalStateException(&quot;Table name &quot; + mm.getSimpleClassName() + &quot; already exists&quot;);</span>
+        }
+
+<span class="nc" id="L50">        createTable(mm);</span>
+<span class="nc" id="L51">        IdField id = mm.getPrimaryKey();</span>
+<span class="nc" id="L52">        addPrimaryKey(mm, id);</span>
+<span class="nc" id="L53">        List&lt;ColumnField&gt; columns = mm.getColumns();</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        for(ColumnField c: columns){</span>
+<span class="nc" id="L55">            addColumn(mm,c);</span>
+<span class="nc" id="L56">        }</span>
+<span class="nc" id="L57">    }</span>
+
+    /**
+     * Added primary column to table
+     * @param mm MetaModel of current table
+     * @param id id of current table
+     */
+    private void addPrimaryKey(Metamodel mm, IdField id){
+<span class="nc" id="L65">        HashMap&lt;Type, String&gt; mapTypeToSQLType = new TypeToStringMap().dataTypeToStringConversion();</span>
+<span class="nc" id="L66">        String addKey = &quot;ALTER TABLE &quot; + mm.getSimpleClassName()</span>
+<span class="nc" id="L67">                + &quot; ADD COLUMN &quot; + id.getName() + &quot; &quot; + mapTypeToSQLType.get(id.getType()) +</span>
+                &quot; GENERATED ALWAYS AS IDENTITY&quot;;
+
+        Statement s;
+<span class="nc" id="L71">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L72">            s = connection.createStatement();</span>
+<span class="nc" id="L73">            s.execute(addKey);</span>
+<span class="nc" id="L74">        }catch (SQLException e){</span>
+<span class="nc" id="L75">            e.printStackTrace();</span>
+<span class="nc" id="L76">        }</span>
+<span class="nc" id="L77">    }</span>
+
+    /**
+     * Returns column name of current table
+     * @param clazz used to identify current table
+     * @return String of column names
+     */
+    public Optional&lt;List&lt;String&gt;&gt; getColumnNames(Class clazz){
+<span class="nc" id="L85">        List&lt;String&gt; ans = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L86">        Metamodel mm = new Metamodel(clazz);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if(!tableExists(mm.getSimpleClassName())){</span>
+<span class="nc" id="L88">            return Optional.of(ans);</span>
+        }
+<span class="nc" id="L90">        String getAllFromTable = &quot;SELECT * FROM &quot; + mm.getSimpleClassName();</span>
+        PreparedStatement ps;
+<span class="nc" id="L92">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L93">        ps = connection.prepareStatement(getAllFromTable);</span>
+<span class="nc" id="L94">        ResultSetMetaData meta = ps.getMetaData();</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        for(int i=1; i &lt;= meta.getColumnCount(); i++){</span>
+<span class="nc" id="L96">            ans.add(meta.getColumnName(i));</span>
+        }
+
+<span class="nc" id="L99">        }catch (SQLException e){</span>
+<span class="nc" id="L100">            e.printStackTrace();</span>
+<span class="nc" id="L101">        }</span>
+
+<span class="nc" id="L103">        return Optional.of(ans);</span>
+    }
+
+
+    /**
+     * Return column types from current table
+     * @param clazz used to identify current table
+     * @return List of column Types
+     */
+    public Optional&lt;List&lt;String&gt;&gt; getAllColumnTypes(Class clazz){
+<span class="nc" id="L113">        List&lt;String&gt; ans = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L114">        Metamodel mm = new Metamodel(clazz);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if(!tableExists(mm.getSimpleClassName())){</span>
+<span class="nc" id="L116">            throw new IllegalStateException(&quot;Table does not exist&quot;);</span>
+        }
+<span class="nc" id="L118">        String getAllFromTable = &quot;SELECT * FROM &quot; + mm.getSimpleClassName();</span>
+        PreparedStatement ps;
+<span class="nc" id="L120">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L121">            ps = connection.prepareStatement(getAllFromTable);</span>
+<span class="nc" id="L122">            ResultSetMetaData meta = ps.getMetaData();</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">            for(int i =1; i &lt;= meta.getColumnCount(); i++){</span>
+<span class="nc" id="L124">                ans.add(meta.getColumnTypeName(i));</span>
+            }
+
+<span class="nc" id="L127">        }catch (SQLException e){</span>
+<span class="nc" id="L128">            e.printStackTrace();</span>
+<span class="nc" id="L129">        }</span>
+
+<span class="nc" id="L131">        return Optional.of(ans);</span>
+    }
+
+    /**
+     * add column to current table. Table is identified using Metamodel mm
+     * @param mm used to identify current table
+     * @param c used to identify which column field name to use
+     */
+    private void addColumn(Metamodel mm, ColumnField c){
+
+<span class="nc" id="L141">        HashMap&lt;Type, String&gt; mapTypeToSQLType = new TypeToStringMap().dataTypeToStringConversion();</span>
+
+<span class="nc" id="L143">        String columnType = &quot;varchar (50)&quot;;</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if(mapTypeToSQLType.containsKey(c.getType())){</span>
+<span class="nc" id="L145">           columnType = mapTypeToSQLType.get(c.getType());</span>
+        }
+
+
+<span class="nc" id="L149">        String addColumn = &quot;ALTER TABLE &quot; + mm.getSimpleClassName()</span>
+<span class="nc" id="L150">                            + &quot; ADD COLUMN &quot; + c.getName() + &quot; &quot; + columnType;</span>
+
+        Statement s;
+<span class="nc" id="L153">        try(Connection connection = ConnectionUtil.getConnection(url, user, pass)){</span>
+<span class="nc" id="L154">            s = connection.createStatement();</span>
+<span class="nc" id="L155">            s.execute(addColumn);</span>
+<span class="nc" id="L156">        }catch (SQLException e){</span>
+<span class="nc" id="L157">            e.printStackTrace();</span>
+<span class="nc" id="L158">        }</span>
+
+<span class="nc" id="L160">    }</span>
+
+    /**
+     * Creates table based on current class
+     * @param mm used to get current class
+     */
+    private void createTable(Metamodel mm){
+<span class="nc" id="L167">        String createTable = &quot;CREATE TABLE &quot; + mm.getSimpleClassName() + &quot;()&quot;;</span>
+        Statement s;
+<span class="nc" id="L169">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L170">            s = connection.createStatement();</span>
+<span class="nc" id="L171">            s.execute(createTable);</span>
+<span class="nc" id="L172">        }catch (SQLException e){</span>
+<span class="nc" id="L173">            e.printStackTrace();</span>
+<span class="nc" id="L174">        }</span>
+<span class="nc" id="L175">    }</span>
+
+    /**
+     * checks if current table exist
+     * @param tableName current table
+     * @return true or false depending on if table exist
+     */
+    public boolean tableExists(String tableName){
+<span class="nc" id="L183">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)) {</span>
+<span class="nc" id="L184">            DatabaseMetaData dbm = connection.getMetaData();</span>
+
+<span class="nc" id="L186">            ResultSet tables = dbm.getTables(null, null, tableName, null);</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">            if (tables.next()) {</span>
+<span class="nc" id="L188">                return true;</span>
+            } else {
+<span class="nc" id="L190">                return false;</span>
+            }
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        }catch (SQLException e){</span>
+<span class="nc" id="L193">            e.printStackTrace();</span>
+        }
+<span class="nc" id="L195">        logger.info(&quot;Cannot connect to DB, so will print table already exists&quot;);</span>
+<span class="nc" id="L196">        return true; // do not want to create table</span>
+    }
+
+    /**
+     * Insert values into table identified with clazz
+     * @param clazz used to identify the current table
+     * @param o set of objects needed to insert.
+     */
+    @Override
+    public void insert(Class&lt;?&gt; clazz, Object ...o) {
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if(!tableExists(clazz.getSimpleName().toLowerCase(Locale.ROOT))){</span>
+<span class="nc" id="L207">            logger.warn(&quot;table does not exists, table name: &quot; + clazz.getClass().getSimpleName());</span>
+<span class="nc" id="L208">            return;</span>
+        }
+
+<span class="nc" id="L211">        Metamodel mm = new Metamodel(clazz);</span>
+<span class="nc" id="L212">        List&lt;ColumnField&gt; fields = mm.getColumns();</span>
+<span class="nc" id="L213">        Object[] allObjects = o;</span>
+
+<span class="nc" id="L215">        List&lt;String&gt; columnNames = getColumnNames(clazz).get();</span>
+<span class="nc" id="L216">        List&lt;String&gt; columnTypes = getAllColumnTypes(clazz).get();</span>
+
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if(allObjects.length != columnNames.size() - 1){</span>
+<span class="nc" id="L219">            logger.warn(&quot;Parameters do not match&quot;);</span>
+<span class="nc" id="L220">            List&lt;String&gt; colNames = getColumnNames(clazz).get();</span>
+<span class="nc" id="L221">            colNames.remove(0);</span>
+<span class="nc" id="L222">            logger.warn(&quot;Parameters required based on columns.&quot; +</span>
+                    colNames +&quot;\nDo not include ID&quot;);
+<span class="nc" id="L224">            return;</span>
+        }
+
+<span class="nc" id="L227">        HashMap&lt;String,Type&gt; reversedMap = new TypeToStringMap().reversedMapStringToDataType();</span>
+
+<span class="nc" id="L229">        String insertString = &quot;INSERT INTO &quot; + mm.getSimpleClassName() + &quot; (&quot;;</span>
+<span class="nc" id="L230">        String columnNamesFormat = &quot;&quot;;</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">        for(int i = 0; i &lt; columnNames.size(); i++){</span>
+<span class="nc" id="L232">            String s = columnNames.get(i);</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">            if(i == 0){</span>
+<span class="nc" id="L234">                continue;</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">            }else if(i == columnNames.size() - 1){</span>
+<span class="nc" id="L236">                columnNamesFormat +=  s + &quot;)&quot;;</span>
+            }else{
+<span class="nc" id="L238">                columnNamesFormat += s +&quot;, &quot;;</span>
+            }
+        }
+
+<span class="nc" id="L242">        insertString += columnNamesFormat + &quot; values (&quot;;</span>
+
+
+<span class="nc" id="L245">        columnNamesFormat = &quot;&quot;;</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">        for(int i =0; i &lt; allObjects.length;i++){</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">            if(i == allObjects.length -1){</span>
+<span class="nc" id="L248">                columnNamesFormat += &quot;\'&quot; +  allObjects[i] + &quot;\')&quot;;</span>
+            }else{
+<span class="nc" id="L250">                columnNamesFormat += &quot;\'&quot; + allObjects[i] + &quot;\', &quot;;</span>
+            }
+        }
+<span class="nc" id="L253">        insertString += columnNamesFormat;</span>
+        Statement s;
+<span class="nc" id="L255">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L256">            s = connection.createStatement();</span>
+<span class="nc" id="L257">            s.execute(insertString);</span>
+
+
+<span class="nc" id="L260">        }catch (SQLException e){</span>
+<span class="nc" id="L261">            logger.warn(&quot;Cannot connect to Database for insertion to table &quot; + clazz.getSimpleName());</span>
+<span class="nc" id="L262">        }</span>
+<span class="nc" id="L263">    }</span>
+
+    /**
+     * Get one values from SQL table by ID
+     * @param clazz current class to identify current SQL table user want to access
+     * @param id the id of object the user wants to return
+     * @return object that represents table
+     */
+    @Override
+    public Object getById(Class clazz, int id) {
+<span class="nc bnc" id="L273" title="All 2 branches missed.">        if(!hasNoArgConstructor(clazz)){</span>
+<span class="nc" id="L274">            logger.warn(&quot;Class does not have no Arg constructor. Cannot continue&quot; +</span>
+<span class="nc" id="L275">                    &quot;\nclass name: &quot; + clazz.getSimpleName());</span>
+<span class="nc" id="L276">            return null;</span>
+        }
+<span class="nc" id="L278">        Metamodel mm = new Metamodel(clazz);</span>
+
+
+<span class="nc" id="L281">        List&lt;String&gt; allColumnNames = getColumnNames(clazz).get();</span>
+<span class="nc" id="L282">        List&lt;Method&gt; unsortedSet= mm.getSetMethodsUnsorted();</span>
+
+<span class="nc" id="L284">        List&lt;Method&gt; sortedSet = sortUnsortedSet(allColumnNames, unsortedSet);</span>
+
+        ResultSet rs;
+        Statement s;
+<span class="nc" id="L288">        String selectAll = &quot;SELECT * FROM &quot; + mm.getSimpleClassName() + &quot; WHERE &quot; + allColumnNames.get(0) + &quot; = &quot; + id;</span>
+<span class="nc" id="L289">        Object o = null;</span>
+
+<span class="nc" id="L291">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L292">            s = connection.createStatement();</span>
+<span class="nc" id="L293">            rs = s.executeQuery(selectAll);</span>
+
+
+
+<span class="nc bnc" id="L297" title="All 2 branches missed.">            while(rs.next()){</span>
+<span class="nc" id="L298">                o = clazz.newInstance();</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">                for(int i = 0; i &lt; allColumnNames.size(); i++) {</span>
+                    // make sure type is correct
+<span class="nc" id="L301">                    Object oToSet = rs.getObject(allColumnNames.get(i));</span>
+<span class="nc" id="L302">                    sortedSet.get(i).invoke(o, oToSet);</span>
+                    // set object and make sure it is the right type
+                }
+            }
+
+<span class="nc" id="L307">        }catch (SQLException e){</span>
+<span class="nc" id="L308">            logger.warn(&quot;Cannot create object instance from table &quot; + mm.getSimpleClassName());</span>
+<span class="nc" id="L309">            e.printStackTrace();</span>
+<span class="nc" id="L310">        } catch (InstantiationException e) {</span>
+<span class="nc" id="L311">            e.printStackTrace();</span>
+<span class="nc" id="L312">        } catch (IllegalAccessException e) {</span>
+<span class="nc" id="L313">            e.printStackTrace();</span>
+<span class="nc" id="L314">        } catch (InvocationTargetException e) {</span>
+<span class="nc" id="L315">            e.printStackTrace();</span>
+<span class="nc" id="L316">        }</span>
+
+<span class="nc" id="L318">        return o;</span>
+
+    }
+
+    /**
+     * Get all values from SQL table
+     * @param clazz current class to identify current SQL table user want to access
+     * @return List of current object identified by clazz
+     */
+    @Override
+    public List&lt;Object&gt; getAll(Class clazz) {
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        if(!hasNoArgConstructor(clazz)){</span>
+<span class="nc" id="L330">            logger.warn(&quot;Class does not have no Arg constructor. Cannot continue&quot; +</span>
+<span class="nc" id="L331">                    &quot;\nclass name: &quot; + clazz.getSimpleName());</span>
+<span class="nc" id="L332">            return null;</span>
+        }
+
+<span class="nc" id="L335">        Metamodel mm = new Metamodel(clazz);</span>
+
+<span class="nc" id="L337">        String selectAll = &quot;SELECT * FROM &quot; + mm.getSimpleClassName();</span>
+<span class="nc" id="L338">        List&lt;String&gt; allColumnNames = getColumnNames(clazz).get();</span>
+<span class="nc" id="L339">        List&lt;Method&gt; unsortedSet= mm.getSetMethodsUnsorted();</span>
+
+<span class="nc" id="L341">        List&lt;Method&gt; sortedSet = sortUnsortedSet(allColumnNames, unsortedSet);</span>
+
+        ResultSet rs;
+        Statement s;
+<span class="nc" id="L345">        ArrayList&lt;Object&gt; allObject = new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L347">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L348">            s = connection.createStatement();</span>
+<span class="nc" id="L349">            rs = s.executeQuery(selectAll);</span>
+
+<span class="nc" id="L351">            Object o = null;</span>
+
+<span class="nc bnc" id="L353" title="All 2 branches missed.">            while(rs.next()){</span>
+<span class="nc" id="L354">                o = clazz.newInstance();</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">                for(int i = 0; i &lt; allColumnNames.size(); i++) {</span>
+                    // make sure type is correct
+<span class="nc" id="L357">                    Object oToSet = rs.getObject(allColumnNames.get(i));</span>
+<span class="nc" id="L358">                    sortedSet.get(i).invoke(o, oToSet);</span>
+                    // set object and make sure it is the right type
+                }
+<span class="nc" id="L361">                allObject.add(o);</span>
+            }
+
+<span class="nc" id="L364">        }catch (SQLException e){</span>
+<span class="nc" id="L365">            logger.warn(&quot;Cannot create object instance from table &quot; + mm.getSimpleClassName());</span>
+<span class="nc" id="L366">            e.printStackTrace();</span>
+<span class="nc" id="L367">        } catch (InstantiationException e) {</span>
+<span class="nc" id="L368">            e.printStackTrace();</span>
+<span class="nc" id="L369">        } catch (IllegalAccessException e) {</span>
+<span class="nc" id="L370">            e.printStackTrace();</span>
+<span class="nc" id="L371">        } catch (InvocationTargetException e) {</span>
+<span class="nc" id="L372">            e.printStackTrace();</span>
+<span class="nc" id="L373">        }</span>
+
+
+<span class="nc" id="L376">        return allObject;</span>
+    }
+
+    /**
+     * update values into table identified with clazz. Value is identified by Id given in ..o
+     * @param clazz used to identify the current table
+     * @param o used to set values in current table and identify which row to replace
+     */
+    @Override
+    public void update(Class clazz, Object... o) {
+<span class="nc bnc" id="L386" title="All 2 branches missed.">        if(!tableExists(clazz.getSimpleName().toLowerCase(Locale.ROOT))){</span>
+<span class="nc" id="L387">            logger.warn(&quot;table does not exists, table name: &quot; + clazz.getClass().getSimpleName());</span>
+        }
+
+<span class="nc" id="L390">        Metamodel mm = new Metamodel(clazz);</span>
+<span class="nc" id="L391">        List&lt;ColumnField&gt; fields = mm.getColumns();</span>
+<span class="nc" id="L392">        Object[] allObjects = o;</span>
+
+<span class="nc" id="L394">        List&lt;String&gt; columnNames = getColumnNames(clazz).get();</span>
+
+<span class="nc bnc" id="L396" title="All 2 branches missed.">        if(allObjects.length != columnNames.size()){</span>
+<span class="nc" id="L397">            logger.warn(&quot;Parameters do not match&quot;);</span>
+<span class="nc" id="L398">            List&lt;String&gt; colNames = getColumnNames(clazz).get();</span>
+<span class="nc" id="L399">            colNames.remove(0);</span>
+<span class="nc" id="L400">            logger.warn(&quot;Parameters required based on columns.&quot; +</span>
+                    colNames +&quot;\nDo not include ID&quot;);
+<span class="nc" id="L402">            return;</span>
+        }
+
+<span class="nc" id="L405">        String updateString = &quot;UPDATE &quot; + mm.getSimpleClassName() + &quot; SET &quot;;</span>
+<span class="nc" id="L406">        String setPortionOfUpdateString = &quot;&quot;;</span>
+<span class="nc bnc" id="L407" title="All 2 branches missed.">        for(int i = 1; i &lt; columnNames.size(); i++){</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">            if(i == columnNames.size() - 1){</span>
+<span class="nc" id="L409">                setPortionOfUpdateString += columnNames.get(i) + &quot; = \'&quot; + allObjects[i] + &quot;\' WHERE &quot;;</span>
+            }else{
+<span class="nc" id="L411">                setPortionOfUpdateString += columnNames.get(i) + &quot; = \'&quot; + allObjects[i] + &quot;\', &quot;;</span>
+            }
+        }
+
+<span class="nc" id="L415">        updateString += setPortionOfUpdateString;</span>
+<span class="nc" id="L416">        updateString += columnNames.get(0) + &quot; = \'&quot; + allObjects[0] +&quot;\'&quot;;</span>
+
+        Statement s;
+<span class="nc" id="L419">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L420">            s = connection.createStatement();</span>
+<span class="nc" id="L421">            s.execute(updateString);</span>
+
+
+<span class="nc" id="L424">        }catch (SQLException e){</span>
+<span class="nc" id="L425">            logger.warn(&quot;cannot update table: &quot; + clazz.getSimpleName());</span>
+<span class="nc" id="L426">            return;</span>
+<span class="nc" id="L427">        }</span>
+
+
+<span class="nc" id="L430">    }</span>
+
+    /**
+     * update values into table identified with clazz. Value is identified by Id
+     * @param clazz used to identify the current table
+     * @param id used to identify row
+     */
+    @Override
+    public void removeById(Class clazz, int id) {
+<span class="nc" id="L439">        Metamodel mm = new Metamodel(clazz);</span>
+<span class="nc" id="L440">        List&lt;String&gt; columnNames = getColumnNames(clazz).get();</span>
+
+<span class="nc" id="L442">        String delete = &quot;DELETE FROM &quot; + mm.getSimpleClassName()</span>
+<span class="nc" id="L443">                + &quot; WHERE &quot; + columnNames.get(0) + &quot; = &quot; + id;</span>
+
+        Statement s;
+<span class="nc" id="L446">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)){</span>
+<span class="nc" id="L447">            s = connection.createStatement();</span>
+<span class="nc" id="L448">            s.execute(delete);</span>
+
+<span class="nc" id="L450">        }catch (SQLException e){</span>
+<span class="nc" id="L451">            logger.warn(&quot;Cannot Delete &quot; + id + &quot; from table &quot; + mm.getSimpleClassName());</span>
+<span class="nc" id="L452">        }</span>
+
+
+<span class="nc" id="L455">    }</span>
+
+    /**
+     * When sorted set is retrieved, this method will sort it depending on table columns
+     * @param allColumnNames a list of all column names
+     * @param unsortedSet An unsorted list of setter methods
+     * @return
+     */
+    private List&lt;Method&gt; sortUnsortedSet(List&lt;String&gt; allColumnNames, List&lt;Method&gt; unsortedSet) {
+<span class="nc" id="L464">        List&lt;Method&gt; sortedSet = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L465" title="All 2 branches missed.">        for(int i =0; i &lt; allColumnNames.size(); i++){</span>
+<span class="nc" id="L466">            String colName = allColumnNames.get(i);</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">            for(int j = 0; j &lt; unsortedSet.size(); j++){</span>
+<span class="nc" id="L468">                String methName= unsortedSet.get(j).getName().toLowerCase(Locale.ROOT);</span>
+<span class="nc bnc" id="L469" title="All 2 branches missed.">                if(methName.contains(colName)){</span>
+<span class="nc" id="L470">                    sortedSet.add(unsortedSet.get(j));</span>
+<span class="nc" id="L471">                    break;</span>
+                }
+            }
+        }
+<span class="nc" id="L475">        return sortedSet;</span>
+    }
+
+    /**
+     * check if there is a no argument constructor is class
+     * @param clazz class we are checking the current method in
+     * @return true or false
+     */
+    private boolean hasNoArgConstructor(Class&lt;?&gt; clazz) {
+<span class="nc" id="L484">        return Stream.of(clazz.getConstructors())</span>
+<span class="nc bnc" id="L485" title="All 2 branches missed.">                .anyMatch((c) -&gt; c.getParameterCount() == 0);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

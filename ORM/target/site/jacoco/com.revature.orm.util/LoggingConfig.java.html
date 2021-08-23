@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoggingConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">orm</a> &gt; <a href="index.source.html" class="el_package">com.revature.orm.util</a> &gt; <span class="el_source">LoggingConfig.java</span></div><h1>LoggingConfig.java</h1><pre class="source lang-java linenums">package com.revature.orm.util;
+
+import org.apache.log4j.*;
+import org.slf4j.LoggerFactory;
+
+
+<span class="nc" id="L7">public class LoggingConfig {</span>
+
+<span class="nc" id="L9">    final static Logger logger = (Logger) LoggerFactory.getLogger(LoggingConfig.class);</span>
+
+
+
+    public static void main(String[] args){
+        /*
+        Logging Levels
+        TRACE
+        DEBUG
+        INFO
+        WARN
+        ERROR
+        FATAL
+        */
+
+<span class="nc" id="L24">        PatternLayout layout = new PatternLayout(&quot;%n%p - %d - %C{1} - %m&quot;);</span>
+<span class="nc" id="L25">        ConsoleAppender consoleAppender = new ConsoleAppender();</span>
+
+<span class="nc" id="L27">        consoleAppender.setThreshold(Level.TRACE); // can switch to any other level</span>
+<span class="nc" id="L28">        consoleAppender.setLayout(layout);</span>
+<span class="nc" id="L29">        consoleAppender.activateOptions(); // forgot what this does</span>
+<span class="nc" id="L30">        Logger.getRootLogger().addAppender(consoleAppender);</span>
+
+<span class="nc" id="L32">        FileAppender fileAppender = new FileAppender();</span>
+<span class="nc" id="L33">        fileAppender.setThreshold(Level.WARN);</span>
+<span class="nc" id="L34">        fileAppender.setLayout(layout);</span>
+<span class="nc" id="L35">        fileAppender.setFile(&quot;src/main/logs/issues.txt&quot;);</span>
+<span class="nc" id="L36">        fileAppender.setAppend(false);</span>
+<span class="nc" id="L37">        fileAppender.activateOptions();</span>
+<span class="nc" id="L38">        Logger.getRootLogger().addAppender(fileAppender);</span>
+
+
+<span class="nc" id="L41">        logger.warn(&quot;test&quot;);</span>
+
+<span class="nc" id="L43">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
