@@ -156,4 +156,12 @@ public class Configuration {
     public void setDbPassword(String dbPassword) {
         this.dbPassword = dbPassword;
     }
+
+    public DAOimpl getDao() {
+        return dao;
+    }
+
+    public void setDao(DAOimpl dao) {
+        this.dao = dao;
+    }
 }

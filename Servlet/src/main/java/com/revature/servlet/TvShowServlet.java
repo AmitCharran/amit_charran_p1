@@ -17,7 +17,6 @@ import java.util.Properties;
  * This class interacts with the website
  * urlPattern give the website link its name
  */
-@WebServlet(urlPatterns = "/tvshows")
 public class TvShowServlet extends HttpServlet {
     private String url;
     private String user;
@@ -31,22 +30,8 @@ public class TvShowServlet extends HttpServlet {
     /**
      *
      */
-    public TvShowServlet(){
-        properties = new Properties();
-        try {
-            Class.forName("org.postgresql.Driver");
-            input = TvShowServlet.class.getResourceAsStream("/credentials.properties");
-            properties.load(input);
-
-        }catch (IOException | ClassNotFoundException e){
-            logger.warn("Cannot find credentials for database");
-            return;
-        }
-        this.url = properties.getProperty("endpoint");
-        this.user = properties.getProperty("username");
-        this.pass = properties.getProperty("password");
-        service = new TvShowService(url,user,pass);
-        logger.info("Servlet initialized");
+    public TvShowServlet(TvShowService service){
+        this.service = service;
     }
 
     /**

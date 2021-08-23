@@ -23,20 +23,16 @@ public class User implements Serializable {
 	@Column(columnName = "email_address")
 	private String emailadress;
 	
-	@JoinColumn(columnName = "test_relation")
-	private Test testRelation; // if this represents foreign key 
-	
 	public User() {
 		super();
 	}
 
-	public User(int id, String firstname, String lastname, String emailadress, Test testRelation) {
+	public User(int id, String firstname, String lastname, String emailadress) {
 		super();
 		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.emailadress = emailadress;
-		this.testRelation = testRelation;
 	}
 
 	public int getId() {
@@ -69,14 +65,6 @@ public class User implements Serializable {
 
 	public void setEmailadress(String emailadress) {
 		this.emailadress = emailadress;
-	}
-
-	public Test getTestRelation() {
-		return testRelation;
-	}
-
-	public void setTestRelation(Test testRelation) {
-		this.testRelation = testRelation;
 	}
 
 	@Override

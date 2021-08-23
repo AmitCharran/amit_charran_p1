@@ -24,10 +24,13 @@ public class TvShowService {
      * used to connect to the database and database functions
      */
     private Configuration cfg;
-    private String url;
-    private String user;
-    private String pass;
+
     private ObjectMapper mapper;
+
+    public TvShowService(Configuration cfg, ObjectMapper mapper){
+        this.cfg = cfg;
+        this.mapper = mapper;
+    }
 
     public TvShowService(String url, String user, String pass){
         cfg = new Configuration(url,user,pass);
@@ -105,7 +108,7 @@ public class TvShowService {
                 if(result){
                     resp.setStatus(HttpServletResponse.SC_OK);
 
-                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(user);
+                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(cfg.getDbUsername());
                     resp.getWriter().print(JSON);
                 }
 

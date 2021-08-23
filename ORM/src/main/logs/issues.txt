@@ -1,2 +1,0 @@
-
-WARN - 2021-08-18 14:24:16,812 - LoggingConfig - test
