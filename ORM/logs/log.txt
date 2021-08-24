@@ -96,3 +96,49 @@ INFO : 2021-08-23 15:41:37 : Login credentials incorrect
 endpoint: 
 user: 
 WARN : 2021-08-23 15:41:37 : No suitable driver found for 
+INFO : 2021-08-23 18:51:14 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:51:14 : No suitable driver found for 
+WARN : 2021-08-23 18:51:14 : Table name user does not exist. Cannot retrieve
+INFO : 2021-08-23 18:51:57 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:51:57 : No suitable driver found for 
+WARN : 2021-08-23 18:51:57 : Table name user does not exist. Cannot retrieve
+INFO : 2021-08-23 18:52:15 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:52:15 : No suitable driver found for 
+WARN : 2021-08-23 18:52:15 : Table name user does not exist. Cannot retrieve
+INFO : 2021-08-23 18:52:30 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:52:30 : No suitable driver found for 
+WARN : 2021-08-23 18:52:30 : Table name user does not exist. Cannot retrieve
+INFO : 2021-08-23 18:52:57 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:52:57 : No suitable driver found for 
+WARN : 2021-08-23 18:52:57 : Table name user does not exist. Cannot retrieve
+INFO : 2021-08-23 18:53:19 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:53:19 : No suitable driver found for 
+WARN : 2021-08-23 18:53:19 : Table name user does not exist. Cannot retrieve
+INFO : 2021-08-23 18:53:34 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:53:34 : No suitable driver found for 
+INFO : 2021-08-23 18:53:39 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:53:39 : No suitable driver found for 
+INFO : 2021-08-23 18:53:45 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:53:45 : No suitable driver found for 
+INFO : 2021-08-23 18:59:42 : Login credentials incorrect 
+endpoint: 
+user: 
+WARN : 2021-08-23 18:59:42 : No suitable driver found for 

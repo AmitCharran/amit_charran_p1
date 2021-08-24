@@ -26,7 +26,7 @@ public class Metamodel&lt;T&gt; {
 
 
 
-<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(Metamodel.class);</span>
+<span class="fc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(Metamodel.class);</span>
 
     /**
      * checks if class has Entity annotation
@@ -35,10 +35,10 @@ public class Metamodel&lt;T&gt; {
      * @return
      */
     public static &lt;T&gt; Metamodel&lt;T&gt; of(Class&lt;T&gt; clazz) {
-<span class="nc bnc" id="L38" title="All 2 branches missed.">        if (clazz.getAnnotation(Entity.class) == null) {</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (clazz.getAnnotation(Entity.class) == null) {</span>
 <span class="nc" id="L39">            throw new IllegalStateException(&quot;Cannot create Metamodel object! Provided class, &quot; + clazz.getName() + &quot; is not annotated with @Entity&quot;);</span>
         }
-<span class="nc" id="L41">        return new Metamodel&lt;&gt;(clazz);</span>
+<span class="fc" id="L41">        return new Metamodel&lt;&gt;(clazz);</span>
     }
 
     /**
@@ -46,18 +46,18 @@ public class Metamodel&lt;T&gt; {
      * initializes column fields and foreign key fields for class
      * @param clazz
      */
-<span class="nc" id="L49">    public Metamodel(Class&lt;T&gt; clazz){</span>
-<span class="nc" id="L50">        this.clazz = clazz;</span>
-<span class="nc" id="L51">        this.columnFields = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L52">        this.foreignKeyFields = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L53">    }</span>
+<span class="fc" id="L49">    public Metamodel(Class&lt;T&gt; clazz){</span>
+<span class="fc" id="L50">        this.clazz = clazz;</span>
+<span class="fc" id="L51">        this.columnFields = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L52">        this.foreignKeyFields = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L53">    }</span>
 
     public String getClassName() {
 <span class="nc" id="L56">        return clazz.getName().toLowerCase(Locale.ROOT);</span>
     }
 
     public String getSimpleClassName() {
-<span class="nc" id="L60">        return clazz.getSimpleName().toLowerCase(Locale.ROOT);</span>
+<span class="fc" id="L60">        return clazz.getSimpleName().toLowerCase(Locale.ROOT);</span>
     }
 
     /**

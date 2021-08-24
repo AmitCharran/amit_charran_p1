@@ -133,6 +133,10 @@ public class Configuration {
         ConnectionUtil.setSchema(schema);
     }
 
+    public boolean tableExists(String tableName){
+        return dao.tableExists(tableName);
+    }
+
     public String getDbURL() {
         return dbURL;
     }

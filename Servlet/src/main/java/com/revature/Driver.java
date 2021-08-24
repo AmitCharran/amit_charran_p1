@@ -24,7 +24,7 @@ public class Driver implements ServletContextListener {
     private String url;
     private String user;
     private String pass;
-    private Properties properties;
+    private static Properties properties;
     private static InputStream input;
     private static final Logger logger = LoggerFactory.getLogger(TvShowService.class);
 
@@ -60,5 +60,24 @@ public class Driver implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContextListener.super.contextDestroyed(sce);
+    }
+
+    public static void main(String[] args) {
+        properties = new Properties();
+        try {
+            Class.forName("org.postgresql.Driver");
+            input = TvShowServlet.class.getResourceAsStream("/credentials.properties");
+            properties.load(input);
+
+        }catch (IOException | ClassNotFoundException e){
+            logger.warn("Cannot find credentials for database");
+            return;
+        }
+        String url = properties.getProperty("endpoint");
+        String user = properties.getProperty("username");
+        String pass = properties.getProperty("password");
+
+        Configuration cfg = new Configuration(url,user,pass);
+        cfg.addAnnotatedClass(Movies.class);
     }
 }

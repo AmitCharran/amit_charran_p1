@@ -13,7 +13,7 @@ public class Configuration {
     private List&lt;Metamodel&lt;Class&lt;?&gt;&gt;&gt; metamodelList;
     private DAOimpl dao;
 
-<span class="nc" id="L16">    final static Logger logger = LoggerFactory.getLogger(Configuration.class);</span>
+<span class="fc" id="L16">    final static Logger logger = LoggerFactory.getLogger(Configuration.class);</span>
 
     /**
      * Constructor which initializes the
@@ -21,12 +21,12 @@ public class Configuration {
      * @param user username for DB
      * @param pass password for DB
      */
-<span class="nc" id="L24">    public Configuration(String url, String user, String pass){</span>
-<span class="nc" id="L25">        dbURL = url;</span>
-<span class="nc" id="L26">        dbUsername = user;</span>
-<span class="nc" id="L27">        dbPassword = pass;</span>
-<span class="nc" id="L28">        dao = new DAOimpl(dbURL, dbUsername, dbPassword);</span>
-<span class="nc" id="L29">    }</span>
+<span class="fc" id="L24">    public Configuration(String url, String user, String pass){</span>
+<span class="fc" id="L25">        dbURL = url;</span>
+<span class="fc" id="L26">        dbUsername = user;</span>
+<span class="fc" id="L27">        dbPassword = pass;</span>
+<span class="fc" id="L28">        dao = new DAOimpl(dbURL, dbUsername, dbPassword);</span>
+<span class="fc" id="L29">    }</span>
 
     /**
      * Structures class based on annotation
@@ -34,15 +34,15 @@ public class Configuration {
      * @return
      */
     public Configuration addAnnotatedClass(Class annotatedClass) {
-<span class="nc bnc" id="L37" title="All 2 branches missed.">        if(metamodelList == null) {</span>
-<span class="nc" id="L38">            metamodelList = new LinkedList&lt;&gt;();</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if(metamodelList == null) {</span>
+<span class="fc" id="L38">            metamodelList = new LinkedList&lt;&gt;();</span>
         }
 
         // generate a method in metamodel that transforms a class into an appropriate data model to be
         // transposed into a relation db object
-<span class="nc" id="L43">        metamodelList.add(Metamodel.of(annotatedClass));</span>
+<span class="fc" id="L43">        metamodelList.add(Metamodel.of(annotatedClass));</span>
 
-<span class="nc" id="L45">        dao = new DAOimpl(dbURL,dbUsername,dbPassword);</span>
+<span class="fc" id="L45">        dao = new DAOimpl(dbURL,dbUsername,dbPassword);</span>
 <span class="nc" id="L46">        dao.createTable(annotatedClass);</span>
 
 <span class="nc" id="L48">        return this; // we're returning the</span>
@@ -55,10 +55,10 @@ public class Configuration {
      * @return List of current object identified by clazz
      */
     public List&lt;Object&gt; getAll(Class clazz){
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        if(!dao.tableExists(clazz.getSimpleName().toLowerCase())){</span>
-<span class="nc" id="L59">               logger.warn(&quot;Table name &quot; + clazz.getSimpleName().toLowerCase() + &quot; does not exist. Cannot retrieve&quot;);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if(!dao.tableExists(clazz.getSimpleName().toLowerCase())){</span>
+<span class="fc" id="L59">               logger.warn(&quot;Table name &quot; + clazz.getSimpleName().toLowerCase() + &quot; does not exist. Cannot retrieve&quot;);</span>
         }
-<span class="nc" id="L61">        return dao.getAll(clazz);</span>
+<span class="fc" id="L61">        return dao.getAll(clazz);</span>
     }
 
     /**
@@ -68,7 +68,7 @@ public class Configuration {
      * @return object that represents table
      */
     public Object getById(Class clazz, int id){
-<span class="nc" id="L71">        return dao.getById(clazz, id);</span>
+<span class="fc" id="L71">        return dao.getById(clazz, id);</span>
     }
 
 
@@ -78,8 +78,8 @@ public class Configuration {
      * @param o set of objects needed to insert.
      */
     public void insertIntoTable(Class clazz, Object ...o){
-<span class="nc" id="L81">       dao.insert(clazz, o);</span>
-<span class="nc" id="L82">    }</span>
+<span class="fc" id="L81">       dao.insert(clazz, o);</span>
+<span class="fc" id="L82">    }</span>
 
     /**
      * update values into table identified with clazz. Value is identified by Id given in ..o
@@ -87,8 +87,8 @@ public class Configuration {
      * @param o used to set values in current table and identify which row to replace
      */
     public void update(Class clazz, Object ...o){
-<span class="nc" id="L90">        dao.update(clazz, o);</span>
-<span class="nc" id="L91">    }</span>
+<span class="fc" id="L90">        dao.update(clazz, o);</span>
+<span class="fc" id="L91">    }</span>
 
     /**
      * update values into table identified with clazz. Value is identified by Id
@@ -96,8 +96,8 @@ public class Configuration {
      * @param id used to identify row
      */
     public void deleteByID(Class clazz,int id){
-<span class="nc" id="L99">        dao.removeById(clazz, id);</span>
-<span class="nc" id="L100">    }</span>
+<span class="fc" id="L99">        dao.removeById(clazz, id);</span>
+<span class="fc" id="L100">    }</span>
 
     /**
      * return column names from table
@@ -105,7 +105,7 @@ public class Configuration {
      * @return list of column names
      */
     public List&lt;String&gt; getColumnNames(Class clazz){
-<span class="nc" id="L108">        return dao.getColumnNames(clazz).orElse(null);</span>
+<span class="fc" id="L108">        return dao.getColumnNames(clazz).orElse(null);</span>
     }
 
     /**
@@ -114,7 +114,7 @@ public class Configuration {
      * @return list of class type
      */
     public List&lt;String&gt; getColumnTypes(Class clazz){
-<span class="nc" id="L117">        return dao.getAllColumnTypes(clazz).orElse(null);</span>
+<span class="fc" id="L117">        return dao.getAllColumnTypes(clazz).orElse(null);</span>
     }
 
     /**
@@ -133,28 +133,40 @@ public class Configuration {
 <span class="nc" id="L133">        ConnectionUtil.setSchema(schema);</span>
 <span class="nc" id="L134">    }</span>
 
+    public boolean tableExists(String tableName){
+<span class="nc" id="L137">        return dao.tableExists(tableName);</span>
+    }
+
     public String getDbURL() {
-<span class="nc" id="L137">        return dbURL;</span>
+<span class="fc" id="L141">        return dbURL;</span>
     }
 
     public void setDbURL(String dbURL) {
-<span class="nc" id="L141">        this.dbURL = dbURL;</span>
-<span class="nc" id="L142">    }</span>
+<span class="nc" id="L145">        this.dbURL = dbURL;</span>
+<span class="nc" id="L146">    }</span>
 
     public String getDbUsername() {
-<span class="nc" id="L145">        return dbUsername;</span>
+<span class="nc" id="L149">        return dbUsername;</span>
     }
 
     public void setDbUsername(String dbUsername) {
-<span class="nc" id="L149">        this.dbUsername = dbUsername;</span>
-<span class="nc" id="L150">    }</span>
+<span class="nc" id="L153">        this.dbUsername = dbUsername;</span>
+<span class="nc" id="L154">    }</span>
 
     public String getDbPassword() {
-<span class="nc" id="L153">        return dbPassword;</span>
+<span class="nc" id="L157">        return dbPassword;</span>
     }
 
     public void setDbPassword(String dbPassword) {
-<span class="nc" id="L157">        this.dbPassword = dbPassword;</span>
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L161">        this.dbPassword = dbPassword;</span>
+<span class="nc" id="L162">    }</span>
+
+    public DAOimpl getDao() {
+<span class="nc" id="L165">        return dao;</span>
+    }
+
+    public void setDao(DAOimpl dao) {
+<span class="fc" id="L169">        this.dao = dao;</span>
+<span class="fc" id="L170">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

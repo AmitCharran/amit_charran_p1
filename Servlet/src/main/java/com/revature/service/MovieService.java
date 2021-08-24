@@ -3,6 +3,7 @@ package com.revature.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.model.MovieRating;
 import com.revature.model.Movies;
+import com.revature.model.TvShows;
 import com.revature.orm.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 /**
@@ -29,6 +31,7 @@ public class MovieService {
     public MovieService(Configuration cfg, ObjectMapper mapper){
         this.cfg = cfg;
         this.mapper = mapper;
+
     }
     /**
      * Accesses database and returns all information to print to website in JSON format
@@ -41,6 +44,7 @@ public class MovieService {
         try {
             String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getMovies());
             res.getOutputStream().print(json);
+            res.setStatus(HttpServletResponse.SC_OK);
 
         } catch (IOException e) {
             logger.warn(e.getMessage(), e);
@@ -121,7 +125,7 @@ public class MovieService {
      * @throws IOException
      */
     public void deleteMovie(HttpServletRequest req, HttpServletResponse resp) {
-        boolean result = delete(Integer.parseInt(req.getParameter("userId")));
+        boolean result = delete(Integer.parseInt(req.getParameter("movieId")));
 
         if(result){
             resp.setStatus(HttpServletResponse.SC_OK);
@@ -134,7 +138,7 @@ public class MovieService {
      * @param id id of current row to delete
      * @return true if row is deleted, false if is not deleted
      */
-    private boolean delete(int id){
+    protected boolean delete(int id){
         List<Movies> movies = getMovies();
         for(Movies movie: movies){
             if(movie.getMovieId() == id){
@@ -149,7 +153,7 @@ public class MovieService {
      * @param movie current row user wants to update
      * @return true if item exists and can be updated and false if item id does not exist
      */
-    private boolean update(Movies movie){
+    protected boolean update(Movies movie){
         cfg.update(movie.getClass(), movie.getMovieId(), movie.getMovieName(), movie.getGenre(), movie.getMovieLength(), movie.getMovieRating());
         List<Movies> allMovies = getMovies();
 
@@ -165,7 +169,7 @@ public class MovieService {
      * connect to database and gets info from tvShow table
      * @return list of movie objects
      */
-    private List<Movies> getMovies(){
+    protected List<Movies> getMovies(){
         List<Movies> answer = new ArrayList<>();
         List<Object> result = cfg.getAll(Movies.class);
 
@@ -189,7 +193,7 @@ public class MovieService {
      * @param movie values to update and helps get the table
      * @return 0 = https status conflict --> returns tvId
      */
-    private int insert(Movies movie){
+    protected int insert(Movies movie){
         cfg.insertIntoTable(movie.getClass(), movie.getMovieName(), movie.getGenre(), movie.getMovieLength(), movie.getMovieRating());
 
         List<Movies> allMovies = getMovies();

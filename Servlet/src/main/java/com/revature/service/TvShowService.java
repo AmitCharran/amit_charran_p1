@@ -1,6 +1,7 @@
 package com.revature.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.model.Movies;
 import com.revature.model.TvShows;
 import com.revature.orm.util.Configuration;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ public class TvShowService {
     public TvShowService(Configuration cfg, ObjectMapper mapper){
         this.cfg = cfg;
         this.mapper = mapper;
+
     }
 
     public TvShowService(String url, String user, String pass){
@@ -47,6 +50,7 @@ public class TvShowService {
     public void getAllTvShows(HttpServletRequest req, HttpServletResponse res){
         try {
             String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getTvShows());
+            res.setStatus(HttpServletResponse.SC_OK);
             res.getOutputStream().print(json);
 
         } catch (IOException e) {
@@ -130,7 +134,7 @@ public class TvShowService {
      * @throws IOException
      */
     public void deleteTvShow(HttpServletRequest req, HttpServletResponse resp) {
-        boolean result = delete(Integer.parseInt(req.getParameter("userId")));
+        boolean result = delete(Integer.parseInt(req.getParameter("tvId")));
 
         if(result){
             resp.setStatus(HttpServletResponse.SC_OK);
@@ -144,7 +148,7 @@ public class TvShowService {
      * @param id id of current row to delete
      * @return true if row is deleted, false if is not deleted
      */
-    private boolean delete(int id){
+    protected boolean delete(int id){
         List<TvShows> TvShows = getTvShows();
         for(TvShows TvShow: TvShows){
             if(TvShow.getTvId() == id){
@@ -160,7 +164,7 @@ public class TvShowService {
      * @param TvShow current row user wants to update
      * @return true if item exists and can be updated and false if item id does not exist
      */
-    private boolean update(TvShows TvShow){
+    protected boolean update(TvShows TvShow){
         cfg.update(TvShow.getClass(), TvShow.getTvId(), TvShow.getTvShowName(), TvShow.getGenre(), TvShow.getLength());
         List<TvShows> allTvShows = getTvShows();
 
@@ -176,7 +180,7 @@ public class TvShowService {
      * connect to database and gets info from tvShow table
      * @return list of tvShows objects
      */
-    private List<TvShows> getTvShows(){
+    protected List<TvShows> getTvShows(){
         List<TvShows> answer = new ArrayList<>();
         List<Object> result = cfg.getAll(TvShows.class);
 
@@ -200,7 +204,7 @@ public class TvShowService {
      * @param TvShow values to update and helps get the table
      * @return 0 = https status conflict --> returns tvId
      */
-    private int insert(TvShows TvShow){
+    protected int insert(TvShows TvShow){
         cfg.insertIntoTable(TvShow.getClass(), TvShow.getTvShowName(), TvShow.getGenre(), TvShow.getLength());
 
         List<TvShows> allTvShows = getTvShows();

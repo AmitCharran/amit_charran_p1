@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  */
 public class DAOimpl implements DAO{
 
-<span class="nc" id="L20">    final static Logger logger = LoggerFactory.getLogger(DAOimpl.class);</span>
+<span class="fc" id="L20">    final static Logger logger = LoggerFactory.getLogger(DAOimpl.class);</span>
 
 
     private String url;
@@ -30,11 +30,11 @@ public class DAOimpl implements DAO{
      * @param user
      * @param pass
      */
-<span class="nc" id="L33">    public DAOimpl(String url, String user, String pass){</span>
-<span class="nc" id="L34">        this.url = url;</span>
-<span class="nc" id="L35">        this.user = user;</span>
-<span class="nc" id="L36">        this.pass = pass;</span>
-<span class="nc" id="L37">    }</span>
+<span class="fc" id="L33">    public DAOimpl(String url, String user, String pass){</span>
+<span class="fc" id="L34">        this.url = url;</span>
+<span class="fc" id="L35">        this.user = user;</span>
+<span class="fc" id="L36">        this.pass = pass;</span>
+<span class="fc" id="L37">    }</span>
 
     /**
      * Create table depending on current class
@@ -42,7 +42,7 @@ public class DAOimpl implements DAO{
      */
     @Override
     public void createTable(Class&lt;?&gt; clazz) {
-<span class="nc" id="L45">        Metamodel mm = new Metamodel(clazz);</span>
+<span class="fc" id="L45">        Metamodel mm = new Metamodel(clazz);</span>
 <span class="nc bnc" id="L46" title="All 2 branches missed.">        if(tableExists(mm.getSimpleClassName())){</span>
 <span class="nc" id="L47">            throw new IllegalStateException(&quot;Table name &quot; + mm.getSimpleClassName() + &quot; already exists&quot;);</span>
         }
@@ -180,7 +180,7 @@ public class DAOimpl implements DAO{
      * @return true or false depending on if table exist
      */
     public boolean tableExists(String tableName){
-<span class="nc" id="L183">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)) {</span>
+<span class="fc" id="L183">        try(Connection connection = ConnectionUtil.getConnection(url,user,pass)) {</span>
 <span class="nc" id="L184">            DatabaseMetaData dbm = connection.getMetaData();</span>
 
 <span class="nc" id="L186">            ResultSet tables = dbm.getTables(null, null, tableName, null);</span>
@@ -189,7 +189,7 @@ public class DAOimpl implements DAO{
             } else {
 <span class="nc" id="L190">                return false;</span>
             }
-<span class="nc bnc" id="L192" title="All 2 branches missed.">        }catch (SQLException e){</span>
+<span class="nc" id="L192">        }catch (SQLException e){</span>
 <span class="nc" id="L193">            e.printStackTrace();</span>
         }
 <span class="nc" id="L195">        logger.info(&quot;Cannot connect to DB, so will print table already exists&quot;);</span>

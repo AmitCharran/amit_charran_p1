@@ -12,7 +12,7 @@ import java.util.Properties;
 
 <span class="nc" id="L13">public class ConnectionUtil {</span>
     private static Connection connection;
-<span class="nc" id="L15">    private static final Logger logger = LoggerFactory.getLogger(ConnectionUtil.class);</span>
+<span class="fc" id="L15">    private static final Logger logger = LoggerFactory.getLogger(ConnectionUtil.class);</span>
 
     /**
      * provides a way for us to connect to our database without tediously rewriting code
@@ -24,12 +24,12 @@ import java.util.Properties;
     public static Connection getConnection(String url, String user, String password){
         try{
 <span class="nc" id="L26">            connection = DriverManager.getConnection(url,user,password);</span>
-<span class="nc" id="L27">        }catch (SQLException e){</span>
-<span class="nc" id="L28">            logger.info(&quot;Login credentials incorrect \nendpoint: &quot; + url  +&quot;\nuser: &quot; + user);</span>
-<span class="nc" id="L29">            logger.warn(e.getMessage());</span>
+<span class="fc" id="L27">        }catch (SQLException e){</span>
+<span class="fc" id="L28">            logger.info(&quot;Login credentials incorrect \nendpoint: &quot; + url  +&quot;\nuser: &quot; + user);</span>
+<span class="fc" id="L29">            logger.warn(e.getMessage());</span>
 <span class="nc" id="L30">        }</span>
 
-<span class="nc" id="L32">        return connection;</span>
+<span class="fc" id="L32">        return connection;</span>
     }
 
     /**

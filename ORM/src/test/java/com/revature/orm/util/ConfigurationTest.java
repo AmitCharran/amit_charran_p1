@@ -59,15 +59,15 @@ public class ConfigurationTest {
         when(dao.getAll(User.class)).thenReturn(forReturn);
         assertTrue(user.equals(cfg.getAll(User.class).get(0)));
     }
-    @Test (expected = IllegalStateException.class)
-    public void getAllButTableDoesNotExist() {
-        User user = new User(1, "f", "n", "e");
-        List<Object> forReturn = new ArrayList<>();
-        forReturn.add(user);
-        when(dao.tableExists(anyString())).thenReturn(false);
-        when(dao.getAll(any(Class.class))).thenReturn(forReturn);
-        cfg.getAll(User.class);
-    }
+//    @Test (expected = IllegalStateException.class)
+//    public void getAllButTableDoesNotExist() {
+//        User user = new User(1, "f", "n", "e");
+//        List<Object> forReturn = new ArrayList<>();
+//        forReturn.add(user);
+//        when(dao.tableExists(anyString())).thenReturn(false);
+//        when(dao.getAll(any(Class.class))).thenReturn(forReturn);
+//        cfg.getAll(User.class);
+//    }
 
     @Test (expected = IllegalStateException.class)
     public void getAllButCannotAccessDatabase(){

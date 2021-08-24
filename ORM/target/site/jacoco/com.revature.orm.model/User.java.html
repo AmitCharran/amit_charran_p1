@@ -23,106 +23,94 @@ public class User implements Serializable {
 	@Column(columnName = &quot;email_address&quot;)
 	private String emailadress;
 	
-	@JoinColumn(columnName = &quot;test_relation&quot;)
-	private Test testRelation; // if this represents foreign key 
-	
 	public User() {
-<span class="nc" id="L30">		super();</span>
-<span class="nc" id="L31">	}</span>
+<span class="nc" id="L27">		super();</span>
+<span class="nc" id="L28">	}</span>
 
-	public User(int id, String firstname, String lastname, String emailadress, Test testRelation) {
-<span class="nc" id="L34">		super();</span>
-<span class="nc" id="L35">		this.id = id;</span>
-<span class="nc" id="L36">		this.firstname = firstname;</span>
-<span class="nc" id="L37">		this.lastname = lastname;</span>
-<span class="nc" id="L38">		this.emailadress = emailadress;</span>
-<span class="nc" id="L39">		this.testRelation = testRelation;</span>
-<span class="nc" id="L40">	}</span>
+	public User(int id, String firstname, String lastname, String emailadress) {
+<span class="fc" id="L31">		super();</span>
+<span class="fc" id="L32">		this.id = id;</span>
+<span class="fc" id="L33">		this.firstname = firstname;</span>
+<span class="fc" id="L34">		this.lastname = lastname;</span>
+<span class="fc" id="L35">		this.emailadress = emailadress;</span>
+<span class="fc" id="L36">	}</span>
 
 	public int getId() {
-<span class="nc" id="L43">		return id;</span>
+<span class="nc" id="L39">		return id;</span>
 	}
 
 	public void setId(int id) {
-<span class="nc" id="L47">		this.id = id;</span>
-<span class="nc" id="L48">	}</span>
+<span class="nc" id="L43">		this.id = id;</span>
+<span class="nc" id="L44">	}</span>
 
 	public String getFirstname() {
-<span class="nc" id="L51">		return firstname;</span>
+<span class="nc" id="L47">		return firstname;</span>
 	}
 
 	public void setFirstname(String firstname) {
-<span class="nc" id="L55">		this.firstname = firstname;</span>
-<span class="nc" id="L56">	}</span>
+<span class="nc" id="L51">		this.firstname = firstname;</span>
+<span class="nc" id="L52">	}</span>
 
 	public String getLastname() {
-<span class="nc" id="L59">		return lastname;</span>
+<span class="nc" id="L55">		return lastname;</span>
 	}
 
 	public void setLastname(String lastname) {
-<span class="nc" id="L63">		this.lastname = lastname;</span>
-<span class="nc" id="L64">	}</span>
+<span class="nc" id="L59">		this.lastname = lastname;</span>
+<span class="nc" id="L60">	}</span>
 
 	public String getEmailadress() {
-<span class="nc" id="L67">		return emailadress;</span>
+<span class="nc" id="L63">		return emailadress;</span>
 	}
 
 	public void setEmailadress(String emailadress) {
-<span class="nc" id="L71">		this.emailadress = emailadress;</span>
-<span class="nc" id="L72">	}</span>
-
-	public Test getTestRelation() {
-<span class="nc" id="L75">		return testRelation;</span>
-	}
-
-	public void setTestRelation(Test testRelation) {
-<span class="nc" id="L79">		this.testRelation = testRelation;</span>
-<span class="nc" id="L80">	}</span>
+<span class="nc" id="L67">		this.emailadress = emailadress;</span>
+<span class="nc" id="L68">	}</span>
 
 	@Override
 	public String toString() {
-<span class="nc" id="L84">		return &quot;User [id=&quot; + id + &quot;, firstname=&quot; + firstname + &quot;, lastname=&quot; + lastname + &quot;, emailadress=&quot; + emailadress</span>
+<span class="nc" id="L72">		return &quot;User [id=&quot; + id + &quot;, firstname=&quot; + firstname + &quot;, lastname=&quot; + lastname + &quot;, emailadress=&quot; + emailadress</span>
 				+ &quot;]&quot;;
 	}
 
 	@Override
 	public int hashCode() {
-<span class="nc" id="L90">		final int prime = 31;</span>
-<span class="nc" id="L91">		int result = 1;</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">		result = prime * result + ((emailadress == null) ? 0 : emailadress.hashCode());</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());</span>
-<span class="nc" id="L94">		result = prime * result + id;</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());</span>
-<span class="nc" id="L96">		return result;</span>
+<span class="nc" id="L78">		final int prime = 31;</span>
+<span class="nc" id="L79">		int result = 1;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">		result = prime * result + ((emailadress == null) ? 0 : emailadress.hashCode());</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());</span>
+<span class="nc" id="L82">		result = prime * result + id;</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());</span>
+<span class="nc" id="L84">		return result;</span>
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-<span class="nc bnc" id="L101" title="All 2 branches missed.">		if (this == obj)</span>
-<span class="nc" id="L102">			return true;</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">		if (obj == null)</span>
-<span class="nc" id="L104">			return false;</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (getClass() != obj.getClass())</span>
-<span class="nc" id="L106">			return false;</span>
-<span class="nc" id="L107">		User other = (User) obj;</span>
-<span class="nc bnc" id="L108" title="All 2 branches missed.">		if (emailadress == null) {</span>
-<span class="nc bnc" id="L109" title="All 2 branches missed.">			if (other.emailadress != null)</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">		if (this == obj)</span>
+<span class="fc" id="L90">			return true;</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">		if (obj == null)</span>
+<span class="nc" id="L92">			return false;</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">		if (getClass() != obj.getClass())</span>
+<span class="nc" id="L94">			return false;</span>
+<span class="nc" id="L95">		User other = (User) obj;</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">		if (emailadress == null) {</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">			if (other.emailadress != null)</span>
+<span class="nc" id="L98">				return false;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">		} else if (!emailadress.equals(other.emailadress))</span>
+<span class="nc" id="L100">			return false;</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">		if (firstname == null) {</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">			if (other.firstname != null)</span>
+<span class="nc" id="L103">				return false;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">		} else if (!firstname.equals(other.firstname))</span>
+<span class="nc" id="L105">			return false;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">		if (id != other.id)</span>
+<span class="nc" id="L107">			return false;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">		if (lastname == null) {</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">			if (other.lastname != null)</span>
 <span class="nc" id="L110">				return false;</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">		} else if (!emailadress.equals(other.emailadress))</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">		} else if (!lastname.equals(other.lastname))</span>
 <span class="nc" id="L112">			return false;</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">		if (firstname == null) {</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">			if (other.firstname != null)</span>
-<span class="nc" id="L115">				return false;</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">		} else if (!firstname.equals(other.firstname))</span>
-<span class="nc" id="L117">			return false;</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">		if (id != other.id)</span>
-<span class="nc" id="L119">			return false;</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">		if (lastname == null) {</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">			if (other.lastname != null)</span>
-<span class="nc" id="L122">				return false;</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">		} else if (!lastname.equals(other.lastname))</span>
-<span class="nc" id="L124">			return false;</span>
-<span class="nc" id="L125">		return true;</span>
+<span class="nc" id="L113">		return true;</span>
 	}
 	
 	
