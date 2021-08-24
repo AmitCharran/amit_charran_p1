@@ -104,7 +104,7 @@ public class MovieService {
                 if(result){
                     resp.setStatus(HttpServletResponse.SC_OK);
 
-                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(cfg.getDbUsername());
+                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString("Item Successfully updated in Database");
                     resp.getWriter().print(JSON);
                 }
 

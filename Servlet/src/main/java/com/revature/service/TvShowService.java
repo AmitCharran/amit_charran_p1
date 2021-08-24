@@ -112,7 +112,7 @@ public class TvShowService {
                 if(result){
                     resp.setStatus(HttpServletResponse.SC_OK);
 
-                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(cfg.getDbUsername());
+                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString("Item successfully updated in Database!");
                     resp.getWriter().print(JSON);
                 }
 

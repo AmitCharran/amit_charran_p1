@@ -3,8 +3,6 @@ package com.revature.orm.util;
 import com.revature.orm.annotations.Column;
 import com.revature.orm.annotations.Entity;
 import com.revature.orm.annotations.Id;
-import com.revature.orm.annotations.JoinColumn;
-import com.revature.orm.persistence.DAOimpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,27 +95,6 @@ public class Metamodel<T> {
         }
 
         return columnFields;
-    }
-
-    /**
-     * Looks through fields and returns a list of those with JoinColumn annotation
-     * @return List of fields with JoinColumn annotation
-     */
-    public List<ForeignKeyField> getForeignKeys() {
-
-        List<ForeignKeyField> foreignKeyFields = new ArrayList<>();
-        Field[] fields = clazz.getDeclaredFields();
-
-        for (Field field : fields) {
-
-            JoinColumn column = field.getAnnotation(JoinColumn.class);
-
-            if (column != null) {
-                foreignKeyFields.add(new ForeignKeyField(field));
-            }
-        }
-
-        return foreignKeyFields;
     }
 
     /**

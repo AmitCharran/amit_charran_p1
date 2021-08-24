@@ -3,8 +3,6 @@
 import com.revature.orm.annotations.Column;
 import com.revature.orm.annotations.Entity;
 import com.revature.orm.annotations.Id;
-import com.revature.orm.annotations.JoinColumn;
-import com.revature.orm.persistence.DAOimpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +24,7 @@ public class Metamodel&lt;T&gt; {
 
 
 
-<span class="fc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(Metamodel.class);</span>
+<span class="fc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(Metamodel.class);</span>
 
     /**
      * checks if class has Entity annotation
@@ -35,10 +33,10 @@ public class Metamodel&lt;T&gt; {
      * @return
      */
     public static &lt;T&gt; Metamodel&lt;T&gt; of(Class&lt;T&gt; clazz) {
-<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (clazz.getAnnotation(Entity.class) == null) {</span>
-<span class="nc" id="L39">            throw new IllegalStateException(&quot;Cannot create Metamodel object! Provided class, &quot; + clazz.getName() + &quot; is not annotated with @Entity&quot;);</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (clazz.getAnnotation(Entity.class) == null) {</span>
+<span class="nc" id="L37">            throw new IllegalStateException(&quot;Cannot create Metamodel object! Provided class, &quot; + clazz.getName() + &quot; is not annotated with @Entity&quot;);</span>
         }
-<span class="fc" id="L41">        return new Metamodel&lt;&gt;(clazz);</span>
+<span class="fc" id="L39">        return new Metamodel&lt;&gt;(clazz);</span>
     }
 
     /**
@@ -46,18 +44,18 @@ public class Metamodel&lt;T&gt; {
      * initializes column fields and foreign key fields for class
      * @param clazz
      */
-<span class="fc" id="L49">    public Metamodel(Class&lt;T&gt; clazz){</span>
-<span class="fc" id="L50">        this.clazz = clazz;</span>
-<span class="fc" id="L51">        this.columnFields = new LinkedList&lt;&gt;();</span>
-<span class="fc" id="L52">        this.foreignKeyFields = new LinkedList&lt;&gt;();</span>
-<span class="fc" id="L53">    }</span>
+<span class="fc" id="L47">    public Metamodel(Class&lt;T&gt; clazz){</span>
+<span class="fc" id="L48">        this.clazz = clazz;</span>
+<span class="fc" id="L49">        this.columnFields = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L50">        this.foreignKeyFields = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L51">    }</span>
 
     public String getClassName() {
-<span class="nc" id="L56">        return clazz.getName().toLowerCase(Locale.ROOT);</span>
+<span class="nc" id="L54">        return clazz.getName().toLowerCase(Locale.ROOT);</span>
     }
 
     public String getSimpleClassName() {
-<span class="fc" id="L60">        return clazz.getSimpleName().toLowerCase(Locale.ROOT);</span>
+<span class="fc" id="L58">        return clazz.getSimpleName().toLowerCase(Locale.ROOT);</span>
     }
 
     /**
@@ -66,15 +64,15 @@ public class Metamodel&lt;T&gt; {
      */
     public IdField getPrimaryKey(){
 
-<span class="nc" id="L69">        Field[] fields = clazz.getDeclaredFields();</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        for(Field field : fields){</span>
-<span class="nc" id="L71">            Id primaryKey = field.getAnnotation(Id.class);</span>
-<span class="nc bnc" id="L72" title="All 2 branches missed.">            if(primaryKey != null){</span>
-<span class="nc" id="L73">                return new IdField(field);</span>
+<span class="nc" id="L67">        Field[] fields = clazz.getDeclaredFields();</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for(Field field : fields){</span>
+<span class="nc" id="L69">            Id primaryKey = field.getAnnotation(Id.class);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            if(primaryKey != null){</span>
+<span class="nc" id="L71">                return new IdField(field);</span>
             }
         }
-<span class="nc" id="L76">        logger.warn(&quot;Did not find a field annotated with @Id in: &quot; + clazz.getName());</span>
-<span class="nc" id="L77">        throw new RuntimeException();</span>
+<span class="nc" id="L74">        logger.warn(&quot;Did not find a field annotated with @Id in: &quot; + clazz.getName());</span>
+<span class="nc" id="L75">        throw new RuntimeException();</span>
     }
 
     /**
@@ -83,41 +81,20 @@ public class Metamodel&lt;T&gt; {
      */
     public List&lt;ColumnField&gt; getColumns() {
 
-<span class="nc" id="L86">        Field[] fields = clazz.getDeclaredFields();</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        for (Field field : fields) {</span>
-<span class="nc" id="L88">            Column column = field.getAnnotation(Column.class);</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">            if (column != null) {</span>
-<span class="nc" id="L90">                columnFields.add(new ColumnField(field));</span>
+<span class="nc" id="L84">        Field[] fields = clazz.getDeclaredFields();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        for (Field field : fields) {</span>
+<span class="nc" id="L86">            Column column = field.getAnnotation(Column.class);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">            if (column != null) {</span>
+<span class="nc" id="L88">                columnFields.add(new ColumnField(field));</span>
             }
         }
 
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (columnFields.isEmpty()) {</span>
-<span class="nc" id="L95">            logger.warn(&quot;No columns found in: &quot; + clazz.getName());</span>
-<span class="nc" id="L96">            throw new RuntimeException();</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (columnFields.isEmpty()) {</span>
+<span class="nc" id="L93">            logger.warn(&quot;No columns found in: &quot; + clazz.getName());</span>
+<span class="nc" id="L94">            throw new RuntimeException();</span>
         }
 
-<span class="nc" id="L99">        return columnFields;</span>
-    }
-
-    /**
-     * Looks through fields and returns a list of those with JoinColumn annotation
-     * @return List of fields with JoinColumn annotation
-     */
-    public List&lt;ForeignKeyField&gt; getForeignKeys() {
-
-<span class="nc" id="L108">        List&lt;ForeignKeyField&gt; foreignKeyFields = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L109">        Field[] fields = clazz.getDeclaredFields();</span>
-
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        for (Field field : fields) {</span>
-
-<span class="nc" id="L113">            JoinColumn column = field.getAnnotation(JoinColumn.class);</span>
-
-<span class="nc bnc" id="L115" title="All 2 branches missed.">            if (column != null) {</span>
-<span class="nc" id="L116">                foreignKeyFields.add(new ForeignKeyField(field));</span>
-            }
-        }
-
-<span class="nc" id="L120">        return foreignKeyFields;</span>
+<span class="nc" id="L97">        return columnFields;</span>
     }
 
     /**
@@ -125,12 +102,12 @@ public class Metamodel&lt;T&gt; {
      * @return List of Methods
      */
     public List&lt;Method&gt; getDeclaredMethods(){
-<span class="nc" id="L128">        List&lt;Method&gt; ans = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L129">        Method[] methods = this.clazz.getDeclaredMethods();</span>
-<span class="nc bnc" id="L130" title="All 2 branches missed.">        for(Method m: methods){</span>
-<span class="nc" id="L131">            ans.add(m);</span>
+<span class="nc" id="L105">        List&lt;Method&gt; ans = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L106">        Method[] methods = this.clazz.getDeclaredMethods();</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        for(Method m: methods){</span>
+<span class="nc" id="L108">            ans.add(m);</span>
         }
-<span class="nc" id="L133">        return ans;</span>
+<span class="nc" id="L110">        return ans;</span>
     }
 
     /**
@@ -138,13 +115,13 @@ public class Metamodel&lt;T&gt; {
      * @return an unsorted list of set methods
      */
     public List&lt;Method&gt; getSetMethodsUnsorted(){
-<span class="nc" id="L141">        Method[] methods = this.clazz.getDeclaredMethods();</span>
-<span class="nc" id="L142">        Stream&lt;Method&gt; setMethods = Arrays.stream(methods)</span>
-<span class="nc" id="L143">                .filter(m -&gt; m.getName().contains(&quot;set&quot;));</span>
+<span class="nc" id="L118">        Method[] methods = this.clazz.getDeclaredMethods();</span>
+<span class="nc" id="L119">        Stream&lt;Method&gt; setMethods = Arrays.stream(methods)</span>
+<span class="nc" id="L120">                .filter(m -&gt; m.getName().contains(&quot;set&quot;));</span>
 
-<span class="nc" id="L145">        List&lt;Method&gt; unsorted = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L146">        setMethods.forEach(s -&gt; unsorted.add(s));</span>
-<span class="nc" id="L147">        return unsorted;</span>
+<span class="nc" id="L122">        List&lt;Method&gt; unsorted = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L123">        setMethods.forEach(s -&gt; unsorted.add(s));</span>
+<span class="nc" id="L124">        return unsorted;</span>
     }
 
 

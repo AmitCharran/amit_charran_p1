@@ -1,7 +1,5 @@
 package com.revature.orm.util;
 
-import com.revature.orm.annotations.Id;
-import com.revature.orm.annotations.JoinColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,17 +16,6 @@ public class ForeignKeyField {
     private static final Logger logger = LoggerFactory.getLogger(ForeignKeyField.class);
 
     /**
-     * Constructor that make sure the current field has the annotation "JoinColumn"
-     * @param field From Reflections, Type Field
-     */
-    public ForeignKeyField(Field field) {
-        if (field.getAnnotation(JoinColumn.class) == null) {
-            logger.warn("Cannot create ForeignKeyField object! Provided field, " + getName() + "is not annotated with @JoinColumn");
-            throw new IllegalStateException("Cannot create ForeignKeyField object! Provided field, " + getName() + "is not annotated with @JoinColumn");
-        }
-        this.field = field;
-    }
-    /**
      *  returns name of current field
      * @return String
      */
@@ -42,12 +29,6 @@ public class ForeignKeyField {
     public Class<?> getType() {
         return field.getType();
     }
-    /**
-     * Returns annotation columnsName of current field
-     * @return String that represents annotation columnName
-     */
-    public String getColumnName() {
-        return field.getAnnotation(JoinColumn.class).columnName();
-    }
+
 
 }

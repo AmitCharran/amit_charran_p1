@@ -5,7 +5,6 @@ import java.io.Serializable;
 import com.revature.orm.annotations.Column;
 import com.revature.orm.annotations.Entity;
 import com.revature.orm.annotations.Id;
-import com.revature.orm.annotations.JoinColumn;
 
 // this class will be referred to as an ENTITY in our database
 @Entity(tableName = "users")
