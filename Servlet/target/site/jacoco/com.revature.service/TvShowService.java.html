@@ -32,17 +32,13 @@ public class TvShowService {
 <span class="fc" id="L32">    public TvShowService(Configuration cfg, ObjectMapper mapper){</span>
 <span class="fc" id="L33">        this.cfg = cfg;</span>
 <span class="fc" id="L34">        this.mapper = mapper;</span>
-//        if(!this.cfg.tableExists(TvShows.class.getSimpleName().toLowerCase(Locale.ROOT))){
-//            cfg.addAnnotatedClass(TvShows.class);
-//            logger.info(&quot;Created Table: &quot; + TvShows.class.getSimpleName().toLowerCase(Locale.ROOT));
-//
-//        }
-<span class="fc" id="L40">    }</span>
 
-<span class="nc" id="L42">    public TvShowService(String url, String user, String pass){</span>
-<span class="nc" id="L43">        cfg = new Configuration(url,user,pass);</span>
-<span class="nc" id="L44">        mapper = new ObjectMapper();</span>
-<span class="nc" id="L45">    }</span>
+<span class="fc" id="L36">    }</span>
+
+<span class="nc" id="L38">    public TvShowService(String url, String user, String pass){</span>
+<span class="nc" id="L39">        cfg = new Configuration(url,user,pass);</span>
+<span class="nc" id="L40">        mapper = new ObjectMapper();</span>
+<span class="nc" id="L41">    }</span>
 
     /**
      * Accesses database and returns all information to print to website in JSON format
@@ -53,14 +49,14 @@ public class TvShowService {
      */
     public void getAllTvShows(HttpServletRequest req, HttpServletResponse res){
         try {
-<span class="nc" id="L56">            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getTvShows());</span>
-<span class="nc" id="L57">            res.setStatus(HttpServletResponse.SC_OK);</span>
-<span class="nc" id="L58">            res.getOutputStream().print(json);</span>
+<span class="fc" id="L52">            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getTvShows());</span>
+<span class="fc" id="L53">            res.setStatus(HttpServletResponse.SC_OK);</span>
+<span class="fc" id="L54">            res.getOutputStream().print(json);</span>
 
-<span class="nc" id="L60">        } catch (IOException e) {</span>
-<span class="nc" id="L61">            logger.warn(e.getMessage(), e);</span>
-<span class="nc" id="L62">        }</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L56">        } catch (IOException e) {</span>
+<span class="nc" id="L57">            logger.warn(e.getMessage(), e);</span>
+<span class="fc" id="L58">        }</span>
+<span class="fc" id="L59">    }</span>
 
     /**
      * insert into database with the input given
@@ -72,27 +68,27 @@ public class TvShowService {
     public void insertTvShows(HttpServletRequest req, HttpServletResponse resp) {
         try {
 
-<span class="nc" id="L75">            StringBuilder builder = new StringBuilder();</span>
-<span class="nc" id="L76">            req.getReader().lines()</span>
-<span class="nc" id="L77">                    .collect(Collectors.toList())</span>
-<span class="nc" id="L78">                    .forEach(builder::append);</span>
+<span class="fc" id="L71">            StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L72">            req.getReader().lines()</span>
+<span class="fc" id="L73">                    .collect(Collectors.toList())</span>
+<span class="fc" id="L74">                    .forEach(builder::append);</span>
 
-<span class="nc" id="L80">            TvShows TvShow = mapper.readValue(builder.toString(), TvShows.class);</span>
-<span class="nc" id="L81">            int result = insert(TvShow);</span>
+<span class="fc" id="L76">            TvShows TvShow = mapper.readValue(builder.toString(), TvShows.class);</span>
+<span class="nc" id="L77">            int result = insert(TvShow);</span>
 
-<span class="nc bnc" id="L83" title="All 2 branches missed.">            if(result != 0){</span>
-<span class="nc" id="L84">                resp.setStatus(HttpServletResponse.SC_CREATED);</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">            if(result != 0){</span>
+<span class="nc" id="L80">                resp.setStatus(HttpServletResponse.SC_CREATED);</span>
             } else{
 
                 // TODO: refactor with exception propagation to set better status codes
-<span class="nc" id="L88">                resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
+<span class="nc" id="L84">                resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
             }
 
-<span class="nc" id="L91">        } catch (Exception e) {</span>
-<span class="nc" id="L92">            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);</span>
-<span class="nc" id="L93">            logger.warn(e.getMessage());</span>
-<span class="nc" id="L94">        }</span>
-<span class="nc" id="L95">    }</span>
+<span class="fc" id="L87">        } catch (Exception e) {</span>
+<span class="fc" id="L88">            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);</span>
+<span class="fc" id="L89">            logger.warn(e.getMessage());</span>
+<span class="nc" id="L90">        }</span>
+<span class="fc" id="L91">    }</span>
     /**
      * update table with current input given
      * @param req
@@ -101,34 +97,34 @@ public class TvShowService {
      * @throws IOException
      */
     public void updateTvShow(HttpServletRequest req, HttpServletResponse resp) {
-<span class="nc" id="L104">        StringBuilder builder = new StringBuilder();</span>
+<span class="nc" id="L100">        StringBuilder builder = new StringBuilder();</span>
         try {
 
-<span class="nc" id="L107">            req.getReader().lines()</span>
-<span class="nc" id="L108">                    .collect(Collectors.toList())</span>
-<span class="nc" id="L109">                    .forEach(builder::append);</span>
+<span class="nc" id="L103">            req.getReader().lines()</span>
+<span class="nc" id="L104">                    .collect(Collectors.toList())</span>
+<span class="nc" id="L105">                    .forEach(builder::append);</span>
 
-<span class="nc" id="L111">            TvShows TvShow = mapper.readValue(builder.toString(), TvShows.class);</span>
+<span class="nc" id="L107">            TvShows TvShow = mapper.readValue(builder.toString(), TvShows.class);</span>
 
-<span class="nc bnc" id="L113" title="All 2 branches missed.">            if(TvShow.getTvId() != 0){</span>
-<span class="nc" id="L114">                boolean result = update(TvShow);</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            if(TvShow.getTvId() != 0){</span>
+<span class="nc" id="L110">                boolean result = update(TvShow);</span>
 
-<span class="nc bnc" id="L116" title="All 2 branches missed.">                if(result){</span>
-<span class="nc" id="L117">                    resp.setStatus(HttpServletResponse.SC_OK);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">                if(result){</span>
+<span class="nc" id="L113">                    resp.setStatus(HttpServletResponse.SC_OK);</span>
 
-<span class="nc" id="L119">                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(cfg.getDbUsername());</span>
-<span class="nc" id="L120">                    resp.getWriter().print(JSON);</span>
+<span class="nc" id="L115">                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(&quot;Item successfully updated in Database!&quot;);</span>
+<span class="nc" id="L116">                    resp.getWriter().print(JSON);</span>
                 }
 
-<span class="nc" id="L123">            } else{</span>
-<span class="nc" id="L124">                resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
+<span class="nc" id="L119">            } else{</span>
+<span class="nc" id="L120">                resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
             }
 
-<span class="nc" id="L127">        } catch (IOException e) {</span>
-<span class="nc" id="L128">            e.printStackTrace();</span>
-<span class="nc" id="L129">        }</span>
+<span class="nc" id="L123">        } catch (IOException e) {</span>
+<span class="nc" id="L124">            e.printStackTrace();</span>
+<span class="nc" id="L125">        }</span>
 
-<span class="nc" id="L131">    }</span>
+<span class="nc" id="L127">    }</span>
 
     /**
      * delete row from table based on ID
@@ -138,14 +134,14 @@ public class TvShowService {
      * @throws IOException
      */
     public void deleteTvShow(HttpServletRequest req, HttpServletResponse resp) {
-<span class="nc" id="L141">        boolean result = delete(Integer.parseInt(req.getParameter(&quot;userId&quot;)));</span>
+<span class="fc" id="L137">        boolean result = delete(Integer.parseInt(req.getParameter(&quot;tvId&quot;)));</span>
 
-<span class="nc bnc" id="L143" title="All 2 branches missed.">        if(result){</span>
-<span class="nc" id="L144">            resp.setStatus(HttpServletResponse.SC_OK);</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if(result){</span>
+<span class="fc" id="L140">            resp.setStatus(HttpServletResponse.SC_OK);</span>
         } else{
-<span class="nc" id="L146">            resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
+<span class="nc" id="L142">            resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
         }
-<span class="nc" id="L148">    }</span>
+<span class="fc" id="L144">    }</span>
 
     /**
      * Deletes current row
@@ -153,14 +149,14 @@ public class TvShowService {
      * @return true if row is deleted, false if is not deleted
      */
     protected boolean delete(int id){
-<span class="nc" id="L156">        List&lt;TvShows&gt; TvShows = getTvShows();</span>
-<span class="nc bnc" id="L157" title="All 2 branches missed.">        for(TvShows TvShow: TvShows){</span>
-<span class="nc bnc" id="L158" title="All 2 branches missed.">            if(TvShow.getTvId() == id){</span>
-<span class="nc" id="L159">                cfg.deleteByID(TvShows.class, id);</span>
-<span class="nc" id="L160">                return true;</span>
+<span class="fc" id="L152">        List&lt;TvShows&gt; TvShows = getTvShows();</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        for(TvShows TvShow: TvShows){</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">            if(TvShow.getTvId() == id){</span>
+<span class="fc" id="L155">                cfg.deleteByID(TvShows.class, id);</span>
+<span class="fc" id="L156">                return true;</span>
             }
-<span class="nc" id="L162">        }</span>
-<span class="nc" id="L163">        return false;</span>
+<span class="fc" id="L158">        }</span>
+<span class="fc" id="L159">        return false;</span>
     }
 
     /**
@@ -169,15 +165,15 @@ public class TvShowService {
      * @return true if item exists and can be updated and false if item id does not exist
      */
     protected boolean update(TvShows TvShow){
-<span class="nc" id="L172">        cfg.update(TvShow.getClass(), TvShow.getTvId(), TvShow.getTvShowName(), TvShow.getGenre(), TvShow.getLength());</span>
-<span class="nc" id="L173">        List&lt;TvShows&gt; allTvShows = getTvShows();</span>
+<span class="fc" id="L168">        cfg.update(TvShow.getClass(), TvShow.getTvId(), TvShow.getTvShowName(), TvShow.getGenre(), TvShow.getLength());</span>
+<span class="fc" id="L169">        List&lt;TvShows&gt; allTvShows = getTvShows();</span>
 
-<span class="nc bnc" id="L175" title="All 2 branches missed.">        for(TvShows m: allTvShows){</span>
-<span class="nc bnc" id="L176" title="All 2 branches missed.">            if(m.compareWithoutTvShowId(TvShow)){</span>
-<span class="nc" id="L177">                return true;</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        for(TvShows m: allTvShows){</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">            if(m.compareWithoutTvShowId(TvShow)){</span>
+<span class="fc" id="L173">                return true;</span>
             }
-<span class="nc" id="L179">        }</span>
-<span class="nc" id="L180">        return false;</span>
+<span class="nc" id="L175">        }</span>
+<span class="nc" id="L176">        return false;</span>
     }
 
     /**
@@ -185,22 +181,22 @@ public class TvShowService {
      * @return list of tvShows objects
      */
     protected List&lt;TvShows&gt; getTvShows(){
-<span class="nc" id="L188">        List&lt;TvShows&gt; answer = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L189">        List&lt;Object&gt; result = cfg.getAll(TvShows.class);</span>
+<span class="fc" id="L184">        List&lt;TvShows&gt; answer = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L185">        List&lt;Object&gt; result = cfg.getAll(TvShows.class);</span>
 
-<span class="nc bnc" id="L191" title="All 2 branches missed.">        for(int i =0; i &lt; result.size(); i++){</span>
-<span class="nc" id="L192">            Object o = result.get(i);</span>
-<span class="nc bnc" id="L193" title="All 2 branches missed.">            if(o instanceof TvShows){</span>
-<span class="nc" id="L194">                TvShows toAdd = new TvShows(((TvShows) o).getTvId(),</span>
-<span class="nc" id="L195">                        ((TvShows) o).getTvShowName(),</span>
-<span class="nc" id="L196">                        ((TvShows) o).getGenre(),</span>
-<span class="nc" id="L197">                        ((TvShows) o).getLength());</span>
-<span class="nc" id="L198">                answer.add(toAdd);</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        for(int i =0; i &lt; result.size(); i++){</span>
+<span class="fc" id="L188">            Object o = result.get(i);</span>
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">            if(o instanceof TvShows){</span>
+<span class="fc" id="L190">                TvShows toAdd = new TvShows(((TvShows) o).getTvId(),</span>
+<span class="fc" id="L191">                        ((TvShows) o).getTvShowName(),</span>
+<span class="fc" id="L192">                        ((TvShows) o).getGenre(),</span>
+<span class="fc" id="L193">                        ((TvShows) o).getLength());</span>
+<span class="fc" id="L194">                answer.add(toAdd);</span>
             }
 
         }
 
-<span class="nc" id="L203">        return answer;</span>
+<span class="fc" id="L199">        return answer;</span>
     }
 
     /**
@@ -209,17 +205,17 @@ public class TvShowService {
      * @return 0 = https status conflict --&gt; returns tvId
      */
     protected int insert(TvShows TvShow){
-<span class="nc" id="L212">        cfg.insertIntoTable(TvShow.getClass(), TvShow.getTvShowName(), TvShow.getGenre(), TvShow.getLength());</span>
+<span class="fc" id="L208">        cfg.insertIntoTable(TvShow.getClass(), TvShow.getTvShowName(), TvShow.getGenre(), TvShow.getLength());</span>
 
-<span class="nc" id="L214">        List&lt;TvShows&gt; allTvShows = getTvShows();</span>
+<span class="fc" id="L210">        List&lt;TvShows&gt; allTvShows = getTvShows();</span>
 
-<span class="nc bnc" id="L216" title="All 2 branches missed.">        for(TvShows m: allTvShows){</span>
-<span class="nc bnc" id="L217" title="All 2 branches missed.">            if(m.compareWithoutTvShowId(TvShow)){</span>
-<span class="nc" id="L218">                return m.getTvId();</span>
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">        for(TvShows m: allTvShows){</span>
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">            if(m.compareWithoutTvShowId(TvShow)){</span>
+<span class="fc" id="L214">                return m.getTvId();</span>
             }
-<span class="nc" id="L220">        }</span>
+<span class="nc" id="L216">        }</span>
 
-<span class="nc" id="L222">        return 0;</span>
+<span class="nc" id="L218">        return 0;</span>
     }
 
 

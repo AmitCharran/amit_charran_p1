@@ -21,21 +21,18 @@ import java.util.stream.Collectors;
  * Handles functions from servlet class
  */
 public class MovieService {
-<span class="nc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(MovieService.class);</span>
+<span class="fc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(MovieService.class);</span>
     /**
      * used to connect to the database and database functions
      */
     private Configuration cfg;
     private ObjectMapper mapper;
 
-<span class="nc" id="L31">    public MovieService(Configuration cfg, ObjectMapper mapper){</span>
-<span class="nc" id="L32">        this.cfg = cfg;</span>
-<span class="nc" id="L33">        this.mapper = mapper;</span>
-//        if(!this.cfg.tableExists(Movies.class.getSimpleName().toLowerCase(Locale.ROOT))){
-//            cfg.addAnnotatedClass(Movies.class);
-//            logger.info(&quot;Created Table: &quot; + Movies.class.getSimpleName().toLowerCase(Locale.ROOT));
-//        }
-<span class="nc" id="L38">    }</span>
+<span class="fc" id="L31">    public MovieService(Configuration cfg, ObjectMapper mapper){</span>
+<span class="fc" id="L32">        this.cfg = cfg;</span>
+<span class="fc" id="L33">        this.mapper = mapper;</span>
+
+<span class="fc" id="L35">    }</span>
     /**
      * Accesses database and returns all information to print to website in JSON format
      * @param req
@@ -45,13 +42,14 @@ public class MovieService {
      */
     public void getAllMovies(HttpServletRequest req, HttpServletResponse res){
         try {
-<span class="nc" id="L48">            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getMovies());</span>
-<span class="nc" id="L49">            res.getOutputStream().print(json);</span>
+<span class="fc" id="L45">            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getMovies());</span>
+<span class="fc" id="L46">            res.getOutputStream().print(json);</span>
+<span class="fc" id="L47">            res.setStatus(HttpServletResponse.SC_OK);</span>
 
-<span class="nc" id="L51">        } catch (IOException e) {</span>
-<span class="nc" id="L52">            logger.warn(e.getMessage(), e);</span>
-<span class="nc" id="L53">        }</span>
-<span class="nc" id="L54">    }</span>
+<span class="nc" id="L49">        } catch (IOException e) {</span>
+<span class="nc" id="L50">            logger.warn(e.getMessage(), e);</span>
+<span class="fc" id="L51">        }</span>
+<span class="fc" id="L52">    }</span>
     /**
      * insert into database with the input given
      * @param req info from user
@@ -62,27 +60,27 @@ public class MovieService {
     public void insertMovies(HttpServletRequest req, HttpServletResponse resp) {
         try {
 
-<span class="nc" id="L65">            StringBuilder builder = new StringBuilder();</span>
-<span class="nc" id="L66">            req.getReader().lines()</span>
-<span class="nc" id="L67">                    .collect(Collectors.toList())</span>
-<span class="nc" id="L68">                    .forEach(builder::append);</span>
+<span class="fc" id="L63">            StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L64">            req.getReader().lines()</span>
+<span class="fc" id="L65">                    .collect(Collectors.toList())</span>
+<span class="fc" id="L66">                    .forEach(builder::append);</span>
 
-<span class="nc" id="L70">            Movies movie = mapper.readValue(builder.toString(), Movies.class);</span>
-<span class="nc" id="L71">            int result = insert(movie);</span>
+<span class="fc" id="L68">            Movies movie = mapper.readValue(builder.toString(), Movies.class);</span>
+<span class="nc" id="L69">            int result = insert(movie);</span>
 
-<span class="nc bnc" id="L73" title="All 2 branches missed.">            if(result != 0){</span>
-<span class="nc" id="L74">                resp.setStatus(HttpServletResponse.SC_CREATED);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">            if(result != 0){</span>
+<span class="nc" id="L72">                resp.setStatus(HttpServletResponse.SC_CREATED);</span>
             } else{
 
                 // TODO: refactor with exception propagation to set better status codes
-<span class="nc" id="L78">                resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
+<span class="nc" id="L76">                resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
             }
 
-<span class="nc" id="L81">        } catch (Exception e) {</span>
-<span class="nc" id="L82">            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);</span>
-<span class="nc" id="L83">            logger.warn(e.getMessage());</span>
-<span class="nc" id="L84">        }</span>
-<span class="nc" id="L85">    }</span>
+<span class="fc" id="L79">        } catch (Exception e) {</span>
+<span class="fc" id="L80">            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);</span>
+<span class="fc" id="L81">            logger.warn(e.getMessage());</span>
+<span class="nc" id="L82">        }</span>
+<span class="fc" id="L83">    }</span>
     /**
      * update table with current input given
      * @param req
@@ -91,34 +89,34 @@ public class MovieService {
      * @throws IOException
      */
     public void updateMovie(HttpServletRequest req, HttpServletResponse resp) {
-<span class="nc" id="L94">        StringBuilder builder = new StringBuilder();</span>
+<span class="nc" id="L92">        StringBuilder builder = new StringBuilder();</span>
         try {
 
-<span class="nc" id="L97">            req.getReader().lines()</span>
-<span class="nc" id="L98">                    .collect(Collectors.toList())</span>
-<span class="nc" id="L99">                    .forEach(builder::append);</span>
+<span class="nc" id="L95">            req.getReader().lines()</span>
+<span class="nc" id="L96">                    .collect(Collectors.toList())</span>
+<span class="nc" id="L97">                    .forEach(builder::append);</span>
 
-<span class="nc" id="L101">            Movies movie = mapper.readValue(builder.toString(), Movies.class);</span>
+<span class="nc" id="L99">            Movies movie = mapper.readValue(builder.toString(), Movies.class);</span>
 
-<span class="nc bnc" id="L103" title="All 2 branches missed.">            if(movie.getMovieId() != 0){</span>
-<span class="nc" id="L104">                boolean result = update(movie);</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">            if(movie.getMovieId() != 0){</span>
+<span class="nc" id="L102">                boolean result = update(movie);</span>
 
-<span class="nc bnc" id="L106" title="All 2 branches missed.">                if(result){</span>
-<span class="nc" id="L107">                    resp.setStatus(HttpServletResponse.SC_OK);</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">                if(result){</span>
+<span class="nc" id="L105">                    resp.setStatus(HttpServletResponse.SC_OK);</span>
 
-<span class="nc" id="L109">                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(cfg.getDbUsername());</span>
-<span class="nc" id="L110">                    resp.getWriter().print(JSON);</span>
+<span class="nc" id="L107">                    String JSON = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(&quot;Item Successfully updated in Database&quot;);</span>
+<span class="nc" id="L108">                    resp.getWriter().print(JSON);</span>
                 }
 
-<span class="nc" id="L113">            } else{</span>
-<span class="nc" id="L114">                resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
+<span class="nc" id="L111">            } else{</span>
+<span class="nc" id="L112">                resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
             }
 
-<span class="nc" id="L117">        } catch (IOException e) {</span>
-<span class="nc" id="L118">            e.printStackTrace();</span>
-<span class="nc" id="L119">        }</span>
+<span class="nc" id="L115">        } catch (IOException e) {</span>
+<span class="nc" id="L116">            e.printStackTrace();</span>
+<span class="nc" id="L117">        }</span>
 
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L119">    }</span>
     /**
      * delete row from table based on ID
      * @param req info from user
@@ -127,86 +125,86 @@ public class MovieService {
      * @throws IOException
      */
     public void deleteMovie(HttpServletRequest req, HttpServletResponse resp) {
-<span class="nc" id="L130">        boolean result = delete(Integer.parseInt(req.getParameter(&quot;userId&quot;)));</span>
+<span class="fc" id="L128">        boolean result = delete(Integer.parseInt(req.getParameter(&quot;movieId&quot;)));</span>
 
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if(result){</span>
-<span class="nc" id="L133">            resp.setStatus(HttpServletResponse.SC_OK);</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        if(result){</span>
+<span class="fc" id="L131">            resp.setStatus(HttpServletResponse.SC_OK);</span>
         } else{
-<span class="nc" id="L135">            resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
+<span class="nc" id="L133">            resp.setStatus(HttpServletResponse.SC_CONFLICT);</span>
         }
-<span class="nc" id="L137">    }</span>
+<span class="fc" id="L135">    }</span>
     /**
      * Deletes current row
      * @param id id of current row to delete
      * @return true if row is deleted, false if is not deleted
      */
-    private boolean delete(int id){
-<span class="nc" id="L144">        List&lt;Movies&gt; movies = getMovies();</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        for(Movies movie: movies){</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">            if(movie.getMovieId() == id){</span>
-<span class="nc" id="L147">                cfg.deleteByID(Movies.class, id);</span>
-<span class="nc" id="L148">                return true;</span>
+    protected boolean delete(int id){
+<span class="fc" id="L142">        List&lt;Movies&gt; movies = getMovies();</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        for(Movies movie: movies){</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">            if(movie.getMovieId() == id){</span>
+<span class="fc" id="L145">                cfg.deleteByID(Movies.class, id);</span>
+<span class="fc" id="L146">                return true;</span>
             }
-<span class="nc" id="L150">        }</span>
-<span class="nc" id="L151">        return false;</span>
+<span class="fc" id="L148">        }</span>
+<span class="fc" id="L149">        return false;</span>
     }
     /**
      * changes value in current table. Table identified id from current object
      * @param movie current row user wants to update
      * @return true if item exists and can be updated and false if item id does not exist
      */
-    private boolean update(Movies movie){
-<span class="nc" id="L159">        cfg.update(movie.getClass(), movie.getMovieId(), movie.getMovieName(), movie.getGenre(), movie.getMovieLength(), movie.getMovieRating());</span>
-<span class="nc" id="L160">        List&lt;Movies&gt; allMovies = getMovies();</span>
+    protected boolean update(Movies movie){
+<span class="fc" id="L157">        cfg.update(movie.getClass(), movie.getMovieId(), movie.getMovieName(), movie.getGenre(), movie.getMovieLength(), movie.getMovieRating());</span>
+<span class="fc" id="L158">        List&lt;Movies&gt; allMovies = getMovies();</span>
 
-<span class="nc bnc" id="L162" title="All 2 branches missed.">        for(Movies m: allMovies){</span>
-<span class="nc bnc" id="L163" title="All 2 branches missed.">            if(m.compareWithoutMovieId(movie)){</span>
-<span class="nc" id="L164">                return true;</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        for(Movies m: allMovies){</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">            if(m.compareWithoutMovieId(movie)){</span>
+<span class="fc" id="L162">                return true;</span>
             }
-<span class="nc" id="L166">        }</span>
-<span class="nc" id="L167">        return false;</span>
+<span class="nc" id="L164">        }</span>
+<span class="nc" id="L165">        return false;</span>
     }
 
     /**
      * connect to database and gets info from tvShow table
      * @return list of movie objects
      */
-    private List&lt;Movies&gt; getMovies(){
-<span class="nc" id="L175">        List&lt;Movies&gt; answer = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L176">        List&lt;Object&gt; result = cfg.getAll(Movies.class);</span>
+    protected List&lt;Movies&gt; getMovies(){
+<span class="fc" id="L173">        List&lt;Movies&gt; answer = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L174">        List&lt;Object&gt; result = cfg.getAll(Movies.class);</span>
 
-<span class="nc bnc" id="L178" title="All 2 branches missed.">        for(int i =0; i &lt; result.size(); i++){</span>
-<span class="nc" id="L179">            Object o = result.get(i);</span>
-<span class="nc bnc" id="L180" title="All 2 branches missed.">            if(o instanceof Movies){</span>
-<span class="nc" id="L181">                Movies toAdd = new Movies(((Movies) o).getMovieId(),</span>
-<span class="nc" id="L182">                        ((Movies) o).getMovieName(),</span>
-<span class="nc" id="L183">                        ((Movies) o).getGenre(),</span>
-<span class="nc" id="L184">                        ((Movies) o).getMovieLength(),</span>
-<span class="nc" id="L185">                        ((Movies) o).getMovieRating());</span>
-<span class="nc" id="L186">                answer.add(toAdd);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        for(int i =0; i &lt; result.size(); i++){</span>
+<span class="fc" id="L177">            Object o = result.get(i);</span>
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">            if(o instanceof Movies){</span>
+<span class="fc" id="L179">                Movies toAdd = new Movies(((Movies) o).getMovieId(),</span>
+<span class="fc" id="L180">                        ((Movies) o).getMovieName(),</span>
+<span class="fc" id="L181">                        ((Movies) o).getGenre(),</span>
+<span class="fc" id="L182">                        ((Movies) o).getMovieLength(),</span>
+<span class="fc" id="L183">                        ((Movies) o).getMovieRating());</span>
+<span class="fc" id="L184">                answer.add(toAdd);</span>
             }
 
         }
 
-<span class="nc" id="L191">        return answer;</span>
+<span class="fc" id="L189">        return answer;</span>
     }
     /**
      * updates table
      * @param movie values to update and helps get the table
      * @return 0 = https status conflict --&gt; returns tvId
      */
-    private int insert(Movies movie){
-<span class="nc" id="L199">        cfg.insertIntoTable(movie.getClass(), movie.getMovieName(), movie.getGenre(), movie.getMovieLength(), movie.getMovieRating());</span>
+    protected int insert(Movies movie){
+<span class="fc" id="L197">        cfg.insertIntoTable(movie.getClass(), movie.getMovieName(), movie.getGenre(), movie.getMovieLength(), movie.getMovieRating());</span>
 
-<span class="nc" id="L201">        List&lt;Movies&gt; allMovies = getMovies();</span>
+<span class="fc" id="L199">        List&lt;Movies&gt; allMovies = getMovies();</span>
 
-<span class="nc bnc" id="L203" title="All 2 branches missed.">        for(Movies m: allMovies){</span>
-<span class="nc bnc" id="L204" title="All 2 branches missed.">            if(m.compareWithoutMovieId(movie)){</span>
-<span class="nc" id="L205">                return m.getMovieId();</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">        for(Movies m: allMovies){</span>
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">            if(m.compareWithoutMovieId(movie)){</span>
+<span class="fc" id="L203">                return m.getMovieId();</span>
             }
-<span class="nc" id="L207">        }</span>
+<span class="nc" id="L205">        }</span>
 
-<span class="nc" id="L209">        return 0;</span>
+<span class="nc" id="L207">        return 0;</span>
     }
 
 

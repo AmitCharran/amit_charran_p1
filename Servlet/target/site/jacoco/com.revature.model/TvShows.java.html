@@ -17,17 +17,17 @@ public class TvShows {
     @Column(columnName = &quot;length&quot;)
     private double length;
 
-<span class="nc" id="L20">    public TvShows() {}</span>
+<span class="fc" id="L20">    public TvShows() {}</span>
 
-<span class="nc" id="L22">    public TvShows(int tvId, String tvShowName, String genre, double length) {</span>
-<span class="nc" id="L23">        this.tvId = tvId;</span>
-<span class="nc" id="L24">        this.tvShowName = tvShowName;</span>
-<span class="nc" id="L25">        this.genre = genre;</span>
-<span class="nc" id="L26">        this.length = length;</span>
-<span class="nc" id="L27">    }</span>
+<span class="fc" id="L22">    public TvShows(int tvId, String tvShowName, String genre, double length) {</span>
+<span class="fc" id="L23">        this.tvId = tvId;</span>
+<span class="fc" id="L24">        this.tvShowName = tvShowName;</span>
+<span class="fc" id="L25">        this.genre = genre;</span>
+<span class="fc" id="L26">        this.length = length;</span>
+<span class="fc" id="L27">    }</span>
 
     public int getTvId() {
-<span class="nc" id="L30">        return tvId;</span>
+<span class="fc" id="L30">        return tvId;</span>
     }
 
     public void setTvId(int tvId) {
@@ -35,7 +35,7 @@ public class TvShows {
 <span class="nc" id="L35">    }</span>
 
     public String getTvShowName() {
-<span class="nc" id="L38">        return tvShowName;</span>
+<span class="fc" id="L38">        return tvShowName;</span>
     }
 
     public void setTvShowName(String tvShowName) {
@@ -43,7 +43,7 @@ public class TvShows {
 <span class="nc" id="L43">    }</span>
 
     public String getGenre() {
-<span class="nc" id="L46">        return genre;</span>
+<span class="fc" id="L46">        return genre;</span>
     }
 
     public void setGenre(String genre) {
@@ -51,7 +51,7 @@ public class TvShows {
 <span class="nc" id="L51">    }</span>
 
     public double getLength() {
-<span class="nc" id="L54">        return length;</span>
+<span class="fc" id="L54">        return length;</span>
     }
 
     public void setLength(double length) {
@@ -64,10 +64,10 @@ public class TvShows {
      * @return if value exists in table return true
      */
     public boolean compareWithoutTvShowId(TvShows tvShows){
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        if(tvShows.getTvShowName().equals(tvShowName)</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">                &amp;&amp; tvShows.getGenre().equals(genre)</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">                &amp;&amp; length == tvShows.getLength()){</span>
-<span class="nc" id="L70">            return true;</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if(tvShows.getTvShowName().equals(tvShowName)</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">                &amp;&amp; tvShows.getGenre().equals(genre)</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">                &amp;&amp; length == tvShows.getLength()){</span>
+<span class="fc" id="L70">            return true;</span>
         }
 <span class="nc" id="L72">        return false;</span>
     }

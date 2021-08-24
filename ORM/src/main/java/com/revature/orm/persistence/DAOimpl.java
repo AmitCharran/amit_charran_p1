@@ -44,9 +44,9 @@ public class DAOimpl implements DAO{
     public void createTable(Class<?> clazz) {
         Metamodel mm = new Metamodel(clazz);
         if(tableExists(mm.getSimpleClassName())){
-            throw new IllegalStateException("Table name " + mm.getSimpleClassName() + " already exists");
+            logger.warn("Table name " + mm.getSimpleClassName() + " already exists");
+            return;
         }
-
         createTable(mm);
         IdField id = mm.getPrimaryKey();
         addPrimaryKey(mm, id);
@@ -191,6 +191,7 @@ public class DAOimpl implements DAO{
             }
         }catch (SQLException e){
             e.printStackTrace();
+            logger.warn("cannot connect to DB");
         }
         logger.info("Cannot connect to DB, so will print table already exists");
         return true; // do not want to create table
@@ -209,11 +210,11 @@ public class DAOimpl implements DAO{
         }
 
         Metamodel mm = new Metamodel(clazz);
-        List<ColumnField> fields = mm.getColumns();
+        //List<ColumnField> fields = mm.getColumns();
         Object[] allObjects = o;
 
         List<String> columnNames = getColumnNames(clazz).get();
-        List<String> columnTypes = getAllColumnTypes(clazz).get();
+        //List<String> columnTypes = getAllColumnTypes(clazz).get();
 
         if(allObjects.length != columnNames.size() - 1){
             logger.warn("Parameters do not match");
@@ -224,7 +225,7 @@ public class DAOimpl implements DAO{
             return;
         }
 
-        HashMap<String,Type> reversedMap = new TypeToStringMap().reversedMapStringToDataType();
+        //HashMap<String,Type> reversedMap = new TypeToStringMap().reversedMapStringToDataType();
 
         String insertString = "INSERT INTO " + mm.getSimpleClassName() + " (";
         String columnNamesFormat = "";

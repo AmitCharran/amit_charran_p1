@@ -20,9 +20,6 @@ public class Metamodel<T> {
     private Class<T> clazz;
     private IdField primaryKeyField;
     private List<ColumnField> columnFields;
-    private List<ForeignKeyField> foreignKeyFields;
-
-
 
     private static final Logger logger = LoggerFactory.getLogger(Metamodel.class);
 
@@ -47,7 +44,6 @@ public class Metamodel<T> {
     public Metamodel(Class<T> clazz){
         this.clazz = clazz;
         this.columnFields = new LinkedList<>();
-        this.foreignKeyFields = new LinkedList<>();
     }
 
     public String getClassName() {

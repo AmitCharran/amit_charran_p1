@@ -3,6 +3,7 @@ package com.revature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.revature.model.Movies;
+import com.revature.model.TvShows;
 import com.revature.orm.util.Configuration;
 import com.revature.service.MovieService;
 import com.revature.service.TvShowService;
@@ -79,5 +80,14 @@ public class Driver implements ServletContextListener {
 
         Configuration cfg = new Configuration(url,user,pass);
         cfg.addAnnotatedClass(Movies.class);
+        cfg.addAnnotatedClass(TvShows.class);
     }
+
+
+//    {
+//        "movieName":"Tom and Jerry",
+//            "genre":"Cartoon",
+//            "movieLength":1.0,
+//            "movieRating":"G"
+//    }
 }

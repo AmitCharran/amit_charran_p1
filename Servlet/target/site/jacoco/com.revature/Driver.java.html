@@ -24,7 +24,7 @@ import java.util.Properties;
     private String url;
     private String user;
     private String pass;
-    private Properties properties;
+    private static Properties properties;
     private static InputStream input;
 <span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(TvShowService.class);</span>
 
@@ -61,5 +61,24 @@ import java.util.Properties;
     public void contextDestroyed(ServletContextEvent sce) {
 <span class="nc" id="L62">        ServletContextListener.super.contextDestroyed(sce);</span>
 <span class="nc" id="L63">    }</span>
+
+    public static void main(String[] args) {
+<span class="nc" id="L66">        properties = new Properties();</span>
+        try {
+<span class="nc" id="L68">            Class.forName(&quot;org.postgresql.Driver&quot;);</span>
+<span class="nc" id="L69">            input = TvShowServlet.class.getResourceAsStream(&quot;/credentials.properties&quot;);</span>
+<span class="nc" id="L70">            properties.load(input);</span>
+
+<span class="nc" id="L72">        }catch (IOException | ClassNotFoundException e){</span>
+<span class="nc" id="L73">            logger.warn(&quot;Cannot find credentials for database&quot;);</span>
+<span class="nc" id="L74">            return;</span>
+<span class="nc" id="L75">        }</span>
+<span class="nc" id="L76">        String url = properties.getProperty(&quot;endpoint&quot;);</span>
+<span class="nc" id="L77">        String user = properties.getProperty(&quot;username&quot;);</span>
+<span class="nc" id="L78">        String pass = properties.getProperty(&quot;password&quot;);</span>
+
+<span class="nc" id="L80">        Configuration cfg = new Configuration(url,user,pass);</span>
+<span class="nc" id="L81">        cfg.addAnnotatedClass(Movies.class);</span>
+<span class="nc" id="L82">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
