@@ -2,7 +2,7 @@
 
 ### There are two java projects included in these folders.
 ### There is an ORM and a Servlet
-#####The ORM is packaged into a Jar and is used in the Servlet layer to generate a SQL/DAO layer
+##### The ORM is packaged into a Jar and is used in the Servlet layer to generate a SQL/DAO layer
 
 ##### The servlet layer can create classes with proper annotations and pass them to the ORM layer in the Configuration class and their host, user, and password for a postgres SQL login to dynamically create SQL tables with classes
 
