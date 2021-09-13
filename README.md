@@ -6,7 +6,7 @@
 
 ##### The servlet layer can create classes with proper annotations and pass them to the ORM layer in the Configuration class and their host, user, and password for a postgres SQL login to dynamically create SQL tables with classes
 
-#####Classes requirements
+##### Classes requirements
 * Proper getter/setter methods
 * @Entity annotation above class name
 * @Id annotation above one member field in class to identify primary key. Primary Key is required to be int
